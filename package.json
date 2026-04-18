@@ -5,15 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:api": "node scripts/run-backend.mjs",
+    "dev:stack": "concurrently -k -n api,web -c blue,magenta \"npm run dev:api\" \"npm run dev\"",
+    "restart:dev": "node scripts/kill-dev-servers.mjs && npm run dev:stack",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.0",
     "@eslint/js": "^9.39.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
