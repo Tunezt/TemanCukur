@@ -1,0 +1,21 @@
+---
+description: Restart dev servers after edits (Vite + FastAPI)
+globs:
+  - src/**/*
+  - vite.config.js
+  - backend/app/**/*
+  - scripts/**/*
+  - package.json
+  - .env.development
+alwaysApply: true
+---
+
+After **any** change that affects the running app (frontend `src/`, `vite.config.js`, `backend/app/`, `scripts/`, `package.json`, or `.env.development`), run from the **repo root**:
+
+```bash
+npm run restart:dev
+```
+
+This runs `node scripts/kill-dev-servers.mjs` (several rounds; frees **8010**, **8001**, **5173**) then `npm run dev:stack`: **FastAPI via `backend/.venv`** on **`127.0.0.1:8010`** by default (`TC_API_PORT` overrides; `scripts/run-backend.mjs`) and **Vite**. Avoid `UVICORN_RELOAD=1` on Windows unless needed—reload can serve a **truncated OpenAPI**. Stale listeners cause **404 on admin cancel** while `/health` still works.
+
+If ports stay busy, close other terminals using those ports and run `npm run restart:dev` again.

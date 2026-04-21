@@ -10,8 +10,9 @@ _ENV_FILE = _BACKEND_DIR / ".env"
 
 
 class Settings(BaseSettings):
+    # Local dev: load `backend/.env` when present. On Railway (and CI), only process env is used.
     model_config = SettingsConfigDict(
-        env_file=str(_ENV_FILE),
+        env_file=str(_ENV_FILE) if _ENV_FILE.exists() else None,
         env_file_encoding="utf-8",
         extra="ignore",
     )

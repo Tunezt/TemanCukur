@@ -9,11 +9,10 @@ export const DEV_PROXY_TARGET = (
 /**
  * API origin (no trailing slash). In local dev, empty string = same origin as the Vite
  * app so requests go to `/api/...` and the dev server proxies to FastAPI (see vite.config.js).
- * Set `VITE_API_BASE_URL` to override (e.g. production API).
+ * On Vercel/production, set `VITE_API_BASE_URL` to your Railway (or other) API origin.
  */
 export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL ??
-  (import.meta.env.DEV ? '' : 'http://127.0.0.1:8001')
+  import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? '' : '')
 ).replace(/\/$/, '')
 
 /**

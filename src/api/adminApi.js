@@ -1,7 +1,8 @@
 import { API_BASE_URL, apiUrl, DEV_PROXY_TARGET } from '../config'
 
-/** Must match backend ADMIN_API_KEY (and .env). */
-export const ADMIN_API_KEY = 'temancukur-admin-2026'
+/** Must match backend ADMIN_API_KEY. Set VITE_ADMIN_API_KEY on Vercel to your production key. */
+export const ADMIN_API_KEY =
+  import.meta.env.VITE_ADMIN_API_KEY ?? 'temancukur-admin-2026'
 
 function uvicornPortHint() {
   try {
