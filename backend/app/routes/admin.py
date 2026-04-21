@@ -3,6 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.booking_reminders import remove_booking_reminder_job
 from app.db import get_supabase
 from app.deps import verify_admin_key
 from app.schemas import (
@@ -93,6 +94,7 @@ def admin_cancel_booking(booking_id: UUID):
             status_code=404,
             detail="Booking tidak ditemukan atau sudah dibatalkan",
         )
+    remove_booking_reminder_job(booking_id)
     return CancelResponse(ok=True, booking=_booking_row(rows[0]))
 
 

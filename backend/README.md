@@ -52,6 +52,18 @@ Allowed booking times: `09:00`, `10:00`, `11:00`, `13:00`–`19:00` (see `app/co
 
 Admin routes require header: `X-Admin-Key: <ADMIN_API_KEY>`.
 
+## WhatsApp (Fonnte) and reminders
+
+After a successful `POST /api/bookings`, the API sends:
+
+1. A confirmation to the customer’s WhatsApp (Fonnte).
+2. A “new booking” message to Rifki’s number.
+3. A one-off scheduled reminder to the customer **two hours before** the slot (WITA / `Asia/Makassar`), via APScheduler.
+
+If Fonnte is down or misconfigured, the booking is still stored; errors are logged only.
+
+**Railway / production:** set `FONNTE_TOKEN` and `RIFKI_WHATSAPP` in the service environment (see `.env.example`). Reminders are held in memory on the running web process; if the dyno restarts, pending reminders for already-created bookings are not automatically recreated (only new bookings after restart get reminders).
+
 ### Example requests
 
 ```http

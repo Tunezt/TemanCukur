@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     admin_api_key: str
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
+    # Fonnte WhatsApp (optional locally; set on Railway for notifications)
+    fonnte_token: str | None = None
+    rifki_whatsapp: str | None = None
+
     @field_validator("supabase_url", "supabase_service_key", "admin_api_key", mode="before")
     @classmethod
     def strip_secrets(cls, v: object) -> object:
@@ -34,6 +38,16 @@ class Settings(BaseSettings):
     def normalize_supabase_url(cls, v: str) -> str:
         # Trailing slash breaks some PostgREST client URLs.
         return v.rstrip("/")
+
+    @field_validator("fonnte_token", "rifki_whatsapp", mode="before")
+    @classmethod
+    def optional_strip(cls, v: object) -> object:
+        if v is None:
+            return None
+        if isinstance(v, str):
+            s = v.strip()
+            return s or None
+        return v
 
 
 @lru_cache

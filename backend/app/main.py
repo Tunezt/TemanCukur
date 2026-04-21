@@ -3,6 +3,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.booking_reminders import (
+    shutdown_reminder_scheduler,
+    start_reminder_scheduler,
+)
 from app.config import cors_origin_list, get_settings
 from app.routes.admin import router as admin_router
 from app.routes.bookings import router as bookings_router
@@ -13,7 +17,9 @@ from app.routes.slots import router as slots_router
 async def lifespan(_: FastAPI):
     # Validate env early
     get_settings()
+    start_reminder_scheduler()
     yield
+    shutdown_reminder_scheduler()
 
 
 app = FastAPI(

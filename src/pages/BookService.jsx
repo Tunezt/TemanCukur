@@ -7,13 +7,13 @@ const SERVICES = [
     id: 'haircut-wash',
     name: 'Haircut + wash',
     price: 120_000,
-    durationLabel: '1 hr',
+    durationLabel: '1 jam',
   },
   {
     id: 'haircut',
     name: 'Haircut',
     price: 100_000,
-    durationLabel: '45 mins',
+    durationLabel: '45 menit',
   },
 ]
 

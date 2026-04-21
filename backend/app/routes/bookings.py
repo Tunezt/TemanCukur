@@ -1,12 +1,17 @@
+import logging
 from uuid import UUID
 
 from fastapi import APIRouter, HTTPException
 from postgrest.exceptions import APIError
 
+from app.booking_reminders import remove_booking_reminder_job, schedule_booking_reminder
+from app.booking_whatsapp import send_booking_confirmation_wa
 from app.db import get_supabase
 from app.schemas import BookingCreate, BookingCreateResponse, BookingOut, CancelResponse
 from app.services import fetch_available_slots
 from app.supabase_errors import http_exception_for_supabase
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
@@ -66,7 +71,29 @@ def create_booking(body: BookingCreate):
     rows = res.data or []
     if not rows:
         raise HTTPException(status_code=500, detail="Gagal menyimpan booking")
-    return BookingCreateResponse(booking=_row_to_booking(rows[0]))
+    row = rows[0]
+    booking = _row_to_booking(row)
+
+    try:
+        send_booking_confirmation_wa(
+            customer_name=booking.customer_name,
+            customer_whatsapp_raw=booking.whatsapp,
+            service=booking.service,
+            booking_date=booking.booking_date,
+            booking_time=booking.booking_time,
+        )
+        schedule_booking_reminder(
+            booking.id,
+            booking.booking_date,
+            booking.booking_time,
+        )
+    except Exception:
+        logger.exception(
+            "WhatsApp / reminder scheduling failed after booking create (id=%s)",
+            booking.id,
+        )
+
+    return BookingCreateResponse(booking=booking)
 
 
 @router.post("/{booking_id}/cancel", response_model=CancelResponse)
@@ -87,4 +114,5 @@ def cancel_booking(booking_id: UUID):
         raise HTTPException(
             status_code=404, detail="Booking tidak ditemukan atau sudah dibatalkan"
         )
+    remove_booking_reminder_job(booking_id)
     return CancelResponse(ok=True, booking=_row_to_booking(rows[0]))
