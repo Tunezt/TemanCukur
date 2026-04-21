@@ -3,12 +3,23 @@ import { useNavigate } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
 
 const SERVICES = [
-  { id: 'haircut',      name: 'Potong rambut', price: 80000, duration: 45 },
-  { id: 'haircut-beard', name: 'Potong + jenggot', price: 110000, duration: 60 },
-  { id: 'skinfade',     name: 'Skin fade', price: 100000, duration: 60 },
-  { id: 'beard',        name: 'Rapikan jenggot', price: 50000, duration: 30 },
-  { id: 'full',         name: 'Rambut + jenggot + cuci', price: 140000, duration: 75 },
+  {
+    id: 'haircut-wash',
+    name: 'Haircut + wash',
+    price: 120_000,
+    durationLabel: '1 hr',
+  },
+  {
+    id: 'haircut',
+    name: 'Haircut',
+    price: 100_000,
+    durationLabel: '45 mins',
+  },
 ]
+
+function fmtPriceIdr(n) {
+  return `Rp ${Number(n).toLocaleString('id-ID')}`
+}
 
 export default function BookService() {
   const navigate = useNavigate()
@@ -44,11 +55,9 @@ export default function BookService() {
           >
             <div className="svc-row__left">
               <p className="svc-row__name">{s.name}</p>
-              <p className="svc-row__dur">{s.duration} mnt</p>
+              <p className="svc-row__dur">{s.durationLabel}</p>
             </div>
-            <span className="svc-row__price">
-              Rp {s.price.toLocaleString('id-ID')}
-            </span>
+            <span className="svc-row__price">{fmtPriceIdr(s.price)}</span>
           </div>
         ))}
       </div>

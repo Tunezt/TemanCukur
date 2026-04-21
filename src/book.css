@@ -533,6 +533,7 @@
   max-width: 42ch;
 }
 
+/* Konfirmasi (step 4): compact strip, unchanged rhythm with rest of flow */
 .bk-policy-hint {
   font-family: var(--bk-sans);
   font-size: 0.72rem;
@@ -543,6 +544,45 @@
   padding: 12px 14px;
   border-left: 2px solid var(--bk-line);
   background: rgba(247, 245, 241, 0.55);
+}
+
+/* Confirmed page only: pembatalan block (same rhythm as .bk-success__optional) */
+.bk-notice--success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  align-self: stretch;
+  padding: clamp(1rem, 3.2vw, 1.25rem) clamp(0.85rem, 3vw, 1.15rem)
+    clamp(1.05rem, 3.2vw, 1.3rem);
+  box-sizing: border-box;
+  font-family: var(--bk-sans);
+  text-align: center;
+  background: rgba(247, 245, 241, 0.65);
+  border: 1px solid rgba(12, 12, 12, 0.08);
+  border-radius: 3px;
+}
+
+.bk-notice--success .bk-notice__kicker {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(110, 106, 99, 0.85);
+  line-height: 1.25;
+}
+
+.bk-notice--success .bk-notice__body {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--bk-muted);
+  max-width: 28ch;
 }
 
 /* ── Service list ───────────────────────────────── */
@@ -1215,7 +1255,7 @@
   animation-delay: 0.2s;
 }
 
-.bk-success__card > .bk-success__policy {
+.bk-success__card > .bk-notice--success {
   animation: bkSuccessRise 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: 0.28s;
 }
@@ -1232,7 +1272,7 @@
   .bk-success__card > .bk-success__check,
   .bk-success__card > .bk-success__title,
   .bk-success__card > .bk-success__sub,
-  .bk-success__card > .bk-success__policy,
+  .bk-success__card > .bk-notice--success,
   .bk-success__card > .bk-success__actions {
     animation: none !important;
   }
@@ -1278,27 +1318,6 @@
   line-height: 1.65;
   max-width: 36ch;
   margin: 0;
-}
-
-.bk-success__policy {
-  margin: 0;
-  width: 100%;
-  box-sizing: border-box;
-  padding: clamp(1rem, 3.2vw, 1.35rem) clamp(1rem, 3vw, 1.35rem);
-  font-family: var(--bk-sans);
-  font-size: 0.74rem;
-  line-height: 1.65;
-  color: var(--bk-muted);
-  text-align: center;
-  background: rgba(247, 245, 241, 0.95);
-  border: 1px solid var(--bk-line);
-  border-radius: 2px;
-  max-width: 100%;
-}
-
-.bk-success__policy strong {
-  color: var(--bk-ink);
-  font-weight: 600;
 }
 
 .bk-success__actions {

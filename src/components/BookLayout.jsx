@@ -4,7 +4,7 @@ import '../book.css'
 const STEP_NAMES = ['Layanan', 'Jadwal', 'Data', 'Konfirmasi']
 
 function fmtPrice(n) {
-  if (n == null || Number.isNaN(Number(n))) return '—'
+  if (n == null || Number.isNaN(Number(n))) return '-'
   return `Rp ${Number(n).toLocaleString('id-ID')}`
 }
 

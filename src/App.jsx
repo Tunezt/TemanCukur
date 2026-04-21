@@ -97,7 +97,7 @@ const INSTAGRAM_URL = 'https://www.instagram.com/'
 /** Replace with Rifki’s real business email */
 const BUSINESS_EMAIL = 'hello@temancukur.com'
 const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
-  'Business inquiry — Rifki Muhammad / Teman Cukur'
+  'Business inquiry: Rifki Muhammad / Teman Cukur'
 )}&body=${encodeURIComponent(
   'Hi Rifki,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n'
 )}`
@@ -113,19 +113,19 @@ const heroPhoto = (seed, w, h) =>
 const GALLERY = [
   {
     img: heroPhoto('teman-hero-1', 720, 960),
-    alt: 'Referensi potongan — flow dan taper',
+    alt: 'Referensi potongan, flow dan taper',
     w: 720,
     h: 960,
   },
   {
     img: heroPhoto('teman-hero-2', 560, 560),
-    alt: 'Referensi potongan — tekstur',
+    alt: 'Referensi potongan, tekstur',
     w: 560,
     h: 560,
   },
   {
     img: heroPhoto('teman-hero-3', 560, 560),
-    alt: 'Referensi potongan — fade samping',
+    alt: 'Referensi potongan, fade samping',
     w: 560,
     h: 560,
   },
@@ -162,12 +162,12 @@ const CRAFT_ITEMS = [
   {
     img: heroPhoto('teman-craft-1', 800, 1000),
     title: 'Flow & taper',
-    text: 'Transisi rapi, bobot pas di titik yang tepat — bentuk yang masih enak dilihat berminggu-minggu kemudian.',
+    text: 'Transisi rapi, bobot pas di titik yang tepat, bentuk yang masih enak dilihat berminggu-minggu kemudian.',
   },
   {
     img: heroPhoto('teman-craft-2', 800, 1000),
     title: 'Texture & line',
-    text: 'Korean-style flow dan two-block, distyling supaya tetap tajam di dunia nyata — bukan cuma di kaca.',
+    text: 'Korean-style flow dan two-block, distyling supaya tetap tajam di dunia nyata, bukan cuma di kaca.',
   },
   {
     img: heroPhoto('teman-craft-3', 800, 1000),
@@ -360,7 +360,7 @@ function LandingPage() {
           </h2>
           <p className="craft__lede craft__anim-lede">
             Rifki Muhammad membangun Teman Cukur dengan satu fokus: tren yang
-            pas — flow Korea, two-block rapi, fade tajam — lalu distyling supaya
+            pas (flow Korea, two-block rapi, fade tajam), lalu distyling supaya
             gerak di kepala kamu, bukan cuma di foto referensi. Garis, bobot, dan
             permintaan kamu selalu di utamakan.
           </p>

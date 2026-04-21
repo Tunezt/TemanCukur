@@ -27,10 +27,10 @@ function buildWhatsAppHref(state, { afterWebConfirm = false } = {}) {
     afterWebConfirm
       ? 'Saya sudah booking lewat website Teman Cukur. Ringkasannya:'
       : 'Saya ingin konfirmasi booking Teman Cukur:',
-    `• Layanan: ${state?.service?.name ?? '—'}`,
-    `• Tanggal: ${state?.date ?? '—'}`,
-    `• Waktu: ${state?.time ?? '—'}`,
-    `• Nama: ${state?.name ?? '—'}`,
+    `• Layanan: ${state?.service?.name ?? '-'}`,
+    `• Tanggal: ${state?.date ?? '-'}`,
+    `• Waktu: ${state?.time ?? '-'}`,
+    `• Nama: ${state?.name ?? '-'}`,
   ]
   if (state?.notes) {
     lines.push(`• Catatan: ${state.notes}`)
@@ -124,10 +124,12 @@ export default function BookConfirm() {
             Booking <em>terkonfirmasi.</em>
           </p>
           <p className="bk-success__sub">Sampai jumpa, {state.name}.</p>
-          <p className="bk-success__policy" role="note">
-            Ingin ganti jadwal atau batal? Kabari lewat WhatsApp{' '}
-            <strong>minimal 2 jam</strong> sebelum jam booking.
-          </p>
+          <div className="bk-notice--success" role="note">
+            <p className="bk-notice__kicker">Pembatalan</p>
+            <p className="bk-notice__body">
+              Minimal 2 jam sebelum jam booking, sesuai ketentuan yang berlaku.
+            </p>
+          </div>
           <div className="bk-success__actions">
             <div className="bk-success__wa-group">
               <a
@@ -175,9 +177,8 @@ export default function BookConfirm() {
       <p className="bk-sub">
         Periksa detail di bawah, lalu konfirmasi.
       </p>
-      <p className="bk-policy-hint">
-        Ganti jadwal / batal: kabari lewat WhatsApp minimal 2 jam sebelum jam
-        booking.
+      <p className="bk-policy-hint" role="note">
+        Untuk pembatalan: minimal 2 jam sebelum jam booking, sesuai ketentuan yang berlaku.
       </p>
 
       <div className="bk-confirm-stack">

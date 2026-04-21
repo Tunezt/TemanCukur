@@ -65,7 +65,7 @@ Content-Type: application/json
 {
   "customer_name": "Ahmad",
   "whatsapp": "+6281234567890",
-  "service": "Skin fade",
+  "service": "Haircut",
   "date": "2026-04-20",
   "time": "14:00"
 }

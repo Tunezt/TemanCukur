@@ -208,6 +208,17 @@ export default function AdminDashboard() {
     refreshBookings()
   }, [navigate, refreshBookings])
 
+  /** Poll so new customer bookings appear without manual refresh (skip when tab is hidden). */
+  useEffect(() => {
+    if (!isAdminAuthenticated()) return
+    const intervalMs = 30_000
+    const id = window.setInterval(() => {
+      if (document.visibilityState !== 'visible') return
+      void refreshBookings()
+    }, intervalMs)
+    return () => window.clearInterval(id)
+  }, [refreshBookings])
+
   useEffect(() => {
     if (tab !== 'blocked' || !isAdminAuthenticated()) return
     refreshBlocks()
@@ -297,7 +308,7 @@ export default function AdminDashboard() {
   const cancelBooking = async (rawId) => {
     const id = String(rawId).trim()
     if (!id || id === 'undefined') {
-      showToast('ID booking tidak ada — muat ulang halaman dan coba lagi.', 'error')
+      showToast('ID booking tidak ada. Muat ulang halaman dan coba lagi.', 'error')
       return
     }
     setCancellingId(id)
@@ -319,7 +330,7 @@ export default function AdminDashboard() {
       id: String(b.id),
       customerName: b.customer_name?.trim() || 'Pelanggan',
       time: b.booking_time,
-      service: b.service ?? '—',
+      service: b.service ?? '-',
       dateLabel: b.booking_date ? formatDateLabel(b.booking_date) : null,
     })
   }
@@ -643,9 +654,9 @@ export default function AdminDashboard() {
             <ul className="adm-section__bullets" aria-label="Cara pemblokiran">
               <li>Hanya Senin–Sabtu (jam sama seperti situs booking).</li>
               <li>
-                Setelah 20:00 WITA, hari ini tidak bisa dipilih — mulai dari besok.
+                Setelah 20:00 WITA, hari ini tidak bisa dipilih. Mulai dari besok.
               </li>
-              <li>Tidak ada slot 12:00 — jeda makan siang.</li>
+              <li>Tidak ada slot 12:00 (jeda makan siang).</li>
             </ul>
 
             <form className="adm-block-form" onSubmit={submitBlock}>
@@ -703,7 +714,7 @@ export default function AdminDashboard() {
                           type="button"
                           disabled={already}
                           title={
-                            already ? 'Sudah diblokir — buka blok di bawah' : undefined
+                            already ? 'Sudah diblokir. Buka blok di bawah' : undefined
                           }
                           className={`adm-slot-chip${pending ? ' adm-slot-chip--on' : ''}${already ? ' adm-slot-chip--blocked' : ''}`}
                           onClick={() => toggleSlot(t)}
