@@ -87,9 +87,9 @@ function SplitWord({ text, baseDelay, step = 0.042 }) {
   ))
 }
 
-const MAPS_QUERY =
-  'Jalan Belakang Mall BB, Damai, Balikpapan Selatan, Indonesia'
-const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAPS_QUERY)}`
+/** Google Maps — place page for the physical shop */
+const LOCATION_MAPS_URL =
+  "https://www.google.com/maps/place/Paddy's+Barbershop/@-1.2413192,116.856102,15z/data=!4m15!1m8!3m7!1s0x2df1470a0221d381:0xd55e9fd09aa16b03!2sPaddy's+Barbershop!8m2!3d-1.2445323!4d116.8610554!10e5!16s%2Fg%2F11hz2drsgz!3m5!1s0x2df1470a0221d381:0xd55e9fd09aa16b03!8m2!3d-1.2445323!4d116.8610554!16s%2Fg%2F11hz2drsgz"
 
 /** Replace with real links */
 const INSTAGRAM_URL = 'https://www.instagram.com/'
@@ -395,6 +395,7 @@ function LandingPage() {
         id="location"
         ref={locationRef}
         className={`location reveal${locationInView ? ' in-view' : ''}`}
+        aria-labelledby="location-venue-heading"
       >
         <div className="location__inner">
           <div className="location__image-wrap">
@@ -409,19 +410,28 @@ function LandingPage() {
             />
           </div>
           <div className="location__info">
-            <p className="section-label">Lokasi</p>
+            <p id="location-venue-heading" className="section-label">
+              Paddy's Barbershop
+            </p>
             <address className="location__address">
-              Jalan Belakang Mall BB,<br />
-              Damai, Balikpapan Selatan
+              Jalan Belakang Mall BB, Damai,<br />
+              Balikpapan Selatan
             </address>
-            <p className="location__hours">Sen – Sab &nbsp;·&nbsp; 09.00 – 20.00</p>
+            <div className="location__rule" role="separator" />
+            <div className="location__hours-block">
+              <p className="location__hours-days">Senin – Sabtu</p>
+              <p className="location__hours-time">09.00 – 20.00</p>
+            </div>
             <a
               className="location__cta location__cta--maps"
-              href={MAPS_URL}
+              href={LOCATION_MAPS_URL}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Buka di Maps
+              Buka di Maps{' '}
+              <span className="location__cta-arrow" aria-hidden="true">
+                ↗
+              </span>
             </a>
           </div>
         </div>

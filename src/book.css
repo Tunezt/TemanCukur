@@ -299,47 +299,15 @@
   padding: 28px 26px 24px;
   display: flex;
   flex-direction: column;
-  scrollbar-width: thin;
-  /* Matches global --sb-* from index.css */
-  scrollbar-color: var(--sb-thumb) var(--sb-track);
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   overscroll-behavior: contain;
 }
 
 .bl__panel-inner::-webkit-scrollbar {
-  width: 10px;
-}
-
-.bl__panel-inner::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
-}
-
-.bl__panel-inner::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #faf6ef 0%, var(--sb-track) 100%);
-  border-left: 1px solid rgba(12, 12, 12, 0.06);
-}
-
-.bl__panel-inner::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    180deg,
-    #e8dcc8 0%,
-    #c4a574 42%,
-    #8f8272 100%
-  );
-  border: 2px solid var(--sb-track);
-  border-radius: 999px;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.bl__panel-inner::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    180deg,
-    #f0e6d6 0%,
-    #d4bc8f 40%,
-    #7a6e62 100%
-  );
 }
 
 .bl__ph {

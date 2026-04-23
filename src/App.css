@@ -54,8 +54,8 @@
 }
 
 .location__info .section-label::after {
-  left: 0;
-  transform: none;
+  content: none;
+  display: none;
 }
 
 .reveal {
@@ -1259,25 +1259,54 @@
 }
 
 .location__info {
-  padding: 52px 24px 64px;
+  padding: 56px 24px 72px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 52ch;
+  gap: clamp(22px, 4vw, 30px);
+  max-width: 48ch;
+}
+
+.location__info > .section-label {
+  padding-bottom: 0;
 }
 
 .location__address {
   font-family: var(--serif);
   font-style: italic;
-  font-size: clamp(1.25rem, 5vw, 1.75rem);
+  font-size: clamp(1.125rem, 3.6vw, 1.5rem);
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
   letter-spacing: -0.01em;
   color: var(--black);
   text-wrap: balance;
 }
 
-.location__hours {
+.location__rule {
+  width: clamp(48px, 14vw, 88px);
+  height: 1px;
+  margin: -4px 0 0;
+  background: var(--grey-200);
+  flex-shrink: 0;
+}
+
+.location__hours-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.location__hours-days {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--black);
+  letter-spacing: 0.02em;
+}
+
+.location__hours-time {
+  margin: 0;
   font-family: var(--sans);
   font-size: 0.8125rem;
   font-weight: 300;
@@ -1287,7 +1316,7 @@
 
 .location__cta {
   align-self: flex-start;
-  margin-top: 12px;
+  margin-top: 0;
   background: var(--black);
   color: var(--white);
   font-family: var(--sans);
@@ -1311,11 +1340,19 @@
 .location__cta--maps {
   display: inline-flex;
   align-items: center;
+  gap: 0.4em;
   align-self: flex-start;
   text-decoration: none;
   background: var(--white);
   color: var(--black);
   border: 1px solid var(--grey-200);
+}
+
+.location__cta-arrow {
+  font-size: 0.92em;
+  line-height: 1;
+  opacity: 0.72;
+  transform: translateY(-0.04em);
 }
 .location__cta--maps:hover {
   background: var(--black);
@@ -1353,15 +1390,16 @@
 
   .location__info {
     flex: 1 1 50%;
-    padding: 0;
+    padding: 8px 0 12px;
     justify-content: center;
-    max-width: none;
+    max-width: min(42ch, 100%);
+    gap: clamp(24px, 3.2vw, 32px);
   }
 }
 
 @media (min-width: 1024px) {
   .location__inner {
-    padding: 56px 40px 64px;
+    padding: 64px 40px 72px;
     gap: 56px;
   }
 
@@ -1371,7 +1409,7 @@
   }
 
   .location__info {
-    padding-right: 8px;
+    padding: 12px 16px 16px 0;
   }
 }
 
