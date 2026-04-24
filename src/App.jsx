@@ -1,4 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import './App.css'
 
@@ -102,34 +102,8 @@ const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
   'Hi Rifki,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n'
 )}`
 
-/**
- * Hero gallery — layout defines the frame; images fill via CSS (object-fit: cover).
- * Picsum seeds keep URLs stable so the same “random” photo loads per slot.
- * Swap to `/images/rifki/...` when you have final crops sized for the grid.
- */
-const heroPhoto = (seed, w, h) =>
-  `https://picsum.photos/seed/${encodeURIComponent(seed)}/${w}/${h}`
-
-const GALLERY = [
-  {
-    img: heroPhoto('teman-hero-1', 720, 960),
-    alt: 'Referensi potongan, flow dan taper',
-    w: 720,
-    h: 960,
-  },
-  {
-    img: heroPhoto('teman-hero-2', 560, 560),
-    alt: 'Referensi potongan, tekstur',
-    w: 560,
-    h: 560,
-  },
-  {
-    img: heroPhoto('teman-hero-3', 560, 560),
-    alt: 'Referensi potongan, fade samping',
-    w: 560,
-    h: 560,
-  },
-]
+/** Static assets under `public/images/rifki/` (encode spaces in filenames). */
+const rifkiImg = (filename) => `/images/rifki/${encodeURIComponent(filename)}`
 
 /** Hero ticker — trendy cut names in English (industry terms) */
 const HERO_CUT_STYLES = [
@@ -160,19 +134,19 @@ const HERO_CUT_STYLES = [
 
 const CRAFT_ITEMS = [
   {
-    img: heroPhoto('teman-craft-1', 800, 1000),
-    title: 'Flow & taper',
-    text: 'Transisi rapi, bobot pas di titik yang tepat, bentuk yang masih enak dilihat berminggu-minggu kemudian.',
+    img: rifkiImg('credit_card_1.png'),
+    title: 'Flow & fade',
+    text: 'Volume yang bergerak, fade yang bersih sampai ke neckline. Terlihat styled tanpa terlihat berlebihan.',
   },
   {
-    img: heroPhoto('teman-craft-2', 800, 1000),
-    title: 'Texture & line',
-    text: 'Korean-style flow dan two-block, distyling supaya tetap tajam di dunia nyata, bukan cuma di kaca.',
+    img: rifkiImg('credit_card_2.png'),
+    title: 'Texture & taper',
+    text: 'Tekstur alami di atas, transisi yang mulus di bawah. Potongan yang enak dilihat bahkan tanpa sisir.',
   },
   {
-    img: heroPhoto('teman-craft-3', 800, 1000),
-    title: 'Precision fade',
-    text: 'Tepian rapi, siluet seimbang. Dia dengar dulu, baru potong sesuai yang kamu mau.',
+    img: rifkiImg('credit_card_3.png'),
+    title: 'Korean flow',
+    text: 'Rambut yang jatuh dengan arah dan bobot yang tepat. Flow yang terlihat disengaja, bukan sekadar panjang.',
   },
 ]
 
@@ -183,6 +157,10 @@ function LandingPage() {
   const [pastHero, setPastHero]         = useState(false)
   /** Hero image grid — reveal on first paint (first impression), not scroll */
   const [heroGalleryLoaded, setHeroGalleryLoaded] = useState(false)
+  const [heroMobileLayout, setHeroMobileLayout] = useState(() =>
+    typeof window !== 'undefined' &&
+      window.matchMedia('(max-width: 767px)').matches
+  )
   const galleryRef                      = useRef(null)
   const [craftRef, craftInView]         = useInView(0.12)
   const [locationRef, locationInView]   = useInView(0.1)
@@ -200,6 +178,39 @@ function LandingPage() {
     })
     return () => cancelAnimationFrame(id)
   }, [])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(max-width: 767px)')
+    const sync = () => setHeroMobileLayout(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
+  const heroGallery = useMemo(
+    () => [
+      {
+        img: rifkiImg(heroMobileLayout ? 'bottom right.png' : 'tall slot.png'),
+        alt: 'Referensi potongan, flow dan taper',
+        w: 720,
+        h: 960,
+      },
+      {
+        img: rifkiImg('top right.png'),
+        alt: 'Referensi potongan, tekstur',
+        w: 560,
+        h: 560,
+      },
+      {
+        img: rifkiImg('bottom right.png'),
+        alt: 'Referensi potongan, fade samping',
+        w: 560,
+        h: 560,
+      },
+    ],
+    [heroMobileLayout]
+  )
 
   // Navbar + hero-past detection
   useEffect(() => {
@@ -285,7 +296,7 @@ function LandingPage() {
         <div className="hero__inner">
           {/* Text block */}
           <div className="hero__text">
-            <p className="hero__eyebrow ha ha-1">Barbershop · Est. 2024</p>
+            <p className="hero__eyebrow ha ha-1">Barbershop · Est. 2019</p>
             <h1 className="hero__name">
               <span className="hero__name-word">
                 <SplitWord text="Rifki" baseDelay={0.22} />
@@ -295,7 +306,7 @@ function LandingPage() {
               </em>
             </h1>
             <p className="hero__role ha ha-role">
-              Barber · Flow, fade &amp; tekstur rapi
+              Barber · Flow, fade &amp; tekstur 
             </p>
             <div className="hero__cta-row ha ha-cta">
               <button type="button" className="hero__cta" onClick={goBook}>
@@ -309,13 +320,14 @@ function LandingPage() {
             ref={galleryRef}
             className={`hero__gallery${heroGalleryLoaded ? ' hero__gallery--loaded' : ''}`}
           >
-            {GALLERY.map(({ img, alt, w, h }, i) => (
+            {heroGallery.map(({ img, alt, w, h }, i) => (
               <div
                 key={i}
                 className={`hero__img-wrap hero__img-wrap--${i + 1}`}
                 style={{ '--i': i }}
               >
                 <img
+                  key={img}
                   src={img}
                   alt={alt}
                   width={w}
@@ -359,10 +371,7 @@ function LandingPage() {
             Potongan yang tetap <em>enak</em> dipandang setelah keluar dari kursi.
           </h2>
           <p className="craft__lede craft__anim-lede">
-            Rifki Muhammad membangun Teman Cukur dengan satu fokus: tren yang
-            pas (flow Korea, two-block rapi, fade tajam), lalu distyling supaya
-            gerak di kepala kamu, bukan cuma di foto referensi. Garis, bobot, dan
-            permintaan kamu selalu di utamakan.
+          Setiap detail diperhatikan, dari garis tepi sampai tekstur akhir. Karena potongan yang bagus terlihat rapi bahkan seminggu setelah meninggalkan kursi.
           </p>
         </div>
 
