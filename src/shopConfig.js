@@ -2,12 +2,15 @@
  * Shop facts in one place. Everything marked PLACEHOLDER must be replaced with
  * the client's real content before launch.
  *
- * Barbers (names, specialties, photos) live in the database, not here. The demo rows
- * "Andi Pratama", "Budi Santoso" and "Cahyo Wijaya" use STOCK PHOTOS (PLACEHOLDER).
+ * BARBERS: PLACEHOLDER until the client sends names, specialties and square photos.
+ * They live in the database (bookings point at them), not in this file. Live on the site now:
+ *   sort_order 1: "Andi Pratama", Fade & taper, stock photo   (PLACEHOLDER)
+ *   sort_order 2: "Budi Santoso", Texture & crop, stock photo (PLACEHOLDER)
+ *   sort_order 3: "Cahyo Wijaya" exists but is hidden (is_active = false).
  * To swap in the real team, run in Supabase > SQL Editor, one line per barber:
  *   update public.barbers set name = 'Nama', specialty = 'Fade & taper',
  *     photo_url = '/images/shop/barber-nama.webp' where sort_order = 1;
- * (put square photos in public/images/shop/; set is_active = false to hide a row).
+ * (put square photos in public/images/shop/; is_active = true/false shows or hides a row).
  */
 
 /**

@@ -44,5 +44,11 @@ def send_fonnte_message(target: str, message: str) -> None:
                 (resp.text or "")[:800],
             )
             return
+        # Fonnte answers HTTP 200 with {"status": false, "reason": ...} when a send is refused.
+        body = resp.json() if resp.headers.get("content-type", "").startswith("application/json") else {}
+        if body.get("status") is False:
+            logger.error("Fonnte refused target=%s…: %s", target[:6], str(body.get("reason"))[:300])
+            return
+        logger.info("Fonnte sent to %s…", target[:6])
     except Exception:
         logger.exception("Fonnte request failed (target prefix %s)", target[:6])

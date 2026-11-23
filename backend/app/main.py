@@ -1,9 +1,11 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.booking_reminders import (
+    reschedule_pending_reminders,
     shutdown_reminder_scheduler,
     start_reminder_scheduler,
 )
@@ -14,12 +16,17 @@ from app.routes.barbers import router as barbers_router
 from app.routes.bookings import router as bookings_router
 from app.routes.slots import router as slots_router
 
+# App INFO logs (reminders, Fonnte sends) show in the Railway log stream.
+logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+logging.getLogger("httpx").setLevel(logging.WARNING)  # skip a line per Supabase call
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     # Validate env early
     get_settings()
     start_reminder_scheduler()
+    reschedule_pending_reminders()
     yield
     shutdown_reminder_scheduler()
 

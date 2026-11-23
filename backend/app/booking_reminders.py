@@ -43,6 +43,28 @@ def start_reminder_scheduler() -> BackgroundScheduler:
     return sched
 
 
+def reschedule_pending_reminders() -> int:
+    """Jobs live in memory, so a restart or redeploy drops them; rebuild from the DB on startup."""
+    today = datetime.now(WITA_TZ).date().isoformat()
+    try:
+        res = (
+            get_supabase()
+            .table("bookings")
+            .select("id,booking_date,booking_time")
+            .eq("status", "confirmed")
+            .gte("booking_date", today)
+            .execute()
+        )
+    except Exception:
+        logger.exception("Could not load bookings to reschedule reminders")
+        return 0
+    rows = res.data or []
+    for r in rows:
+        schedule_booking_reminder(UUID(r["id"]), str(r["booking_date"]), r["booking_time"])
+    logger.info("Rescheduled reminders for %d upcoming bookings", len(rows))
+    return len(rows)
+
+
 def shutdown_reminder_scheduler() -> None:
     global _scheduler
     if _scheduler is not None and _scheduler.running:
