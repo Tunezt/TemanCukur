@@ -114,7 +114,7 @@ export default function BookDetails() {
               id="phone"
               className="bk-field__input"
               type="tel"
-              placeholder="08xx xxxx xxxx"
+              placeholder="812 xxxx xxxx"
               autoComplete="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}

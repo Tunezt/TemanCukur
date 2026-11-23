@@ -32,7 +32,7 @@ export default function BookLayout({
     : (barber?.name?.trim()?.[0] || '—').toUpperCase()
 
   return (
-    <div className="bl">
+    <div className={`bl${showSidebarCta ? ' bl--has-cta' : ''}`}>
       <header className="bl__site-header">
         <Link to="/" className="bl__site-brand" aria-label="Beranda Paddy's Barbershop">
           <span className="bl__site-brand-line">Paddy&apos;s</span>

@@ -1,6 +1,12 @@
 import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import './App.css'
+import {
+  BUSINESS_EMAIL,
+  INSTAGRAM_URL,
+  INTERIOR_PHOTO,
+  LOCATION_MAPS_URL,
+} from './shopConfig'
 
 import BookBarber   from './pages/BookBarber'
 import BookService  from './pages/BookService'
@@ -88,23 +94,14 @@ function SplitWord({ text, baseDelay, step = 0.042 }) {
   ))
 }
 
-/** Google Maps — place page for the physical shop */
-const LOCATION_MAPS_URL =
-  "https://www.google.com/maps/place/Paddy's+Barbershop/@-1.2413192,116.856102,15z/data=!4m15!1m8!3m7!1s0x2df1470a0221d381:0xd55e9fd09aa16b03!2sPaddy's+Barbershop!8m2!3d-1.2445323!4d116.8610554!10e5!16s%2Fg%2F11hz2drsgz!3m5!1s0x2df1470a0221d381:0xd55e9fd09aa16b03!8m2!3d-1.2445323!4d116.8610554!16s%2Fg%2F11hz2drsgz"
-
-/** Replace with real links */
-const INSTAGRAM_URL = 'https://www.instagram.com/'
-
-/** Replace with shop business email */
-const BUSINESS_EMAIL = 'hello@paddysbarbershop.com'
 const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
   "Business inquiry: Paddy's Barbershop"
 )}&body=${encodeURIComponent(
   "Hi Paddy's,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n"
 )}`
 
-/** Static assets under `public/images/rifki/` (encode spaces in filenames). */
-const shopImg = (filename) => `/images/rifki/${encodeURIComponent(filename)}`
+/** Static assets under `public/images/shop/` (WebP, sized for 2x screens). */
+const shopImg = (filename) => `/images/shop/${filename}`
 
 /** Hero ticker — trendy cut names in English (industry terms) */
 const HERO_CUT_STYLES = [
@@ -135,17 +132,17 @@ const HERO_CUT_STYLES = [
 
 const CRAFT_ITEMS = [
   {
-    img: shopImg('credit_card_1.png'),
+    img: shopImg('craft-flow-fade.webp'),
     title: 'Flow & fade',
     text: 'Volume yang bergerak, fade yang bersih sampai ke neckline. Terlihat styled tanpa terlihat berlebihan.',
   },
   {
-    img: shopImg('credit_card_2.png'),
+    img: shopImg('craft-texture-taper.webp'),
     title: 'Texture & taper',
     text: 'Tekstur alami di atas, transisi yang mulus di bawah. Potongan yang enak dilihat bahkan tanpa sisir.',
   },
   {
-    img: shopImg('credit_card_3.png'),
+    img: shopImg('craft-korean-flow.webp'),
     title: 'Korean flow',
     text: 'Rambut yang jatuh dengan arah dan bobot yang tepat. Flow yang terlihat disengaja, bukan sekadar panjang.',
   },
@@ -192,19 +189,19 @@ function LandingPage() {
   const heroGallery = useMemo(
     () => [
       {
-        img: shopImg(heroMobileLayout ? 'bottom right.png' : 'tall slot.png'),
+        img: shopImg(heroMobileLayout ? 'hero-bottom.webp' : 'hero-tall.webp'),
         alt: 'Referensi potongan, flow dan taper',
         w: 720,
         h: 960,
       },
       {
-        img: shopImg('top right.png'),
+        img: shopImg('hero-top.webp'),
         alt: 'Referensi potongan, tekstur',
         w: 560,
         h: 560,
       },
       {
-        img: shopImg('bottom right.png'),
+        img: shopImg('hero-bottom.webp'),
         alt: 'Referensi potongan, fade samping',
         w: 560,
         h: 560,
@@ -407,10 +404,10 @@ function LandingPage() {
           <div className="location__image-wrap">
             <img
               className="location__image"
-              src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&h=800&q=80"
+              src={INTERIOR_PHOTO.src}
               alt="Interior Paddy's Barbershop"
-              width={1200}
-              height={800}
+              width={INTERIOR_PHOTO.width}
+              height={INTERIOR_PHOTO.height}
               loading="lazy"
               decoding="async"
             />

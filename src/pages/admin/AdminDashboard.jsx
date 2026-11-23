@@ -7,6 +7,7 @@ import {
   adminListBlocks,
   adminListBookings,
 } from '../../api/adminApi'
+import { fetchBarbers } from '../../api/booking'
 import BlockDateCalendar from '../../components/admin/BlockDateCalendar'
 import { clearAdminAuth, isAdminAuthenticated } from '../../admin/auth'
 import {
@@ -86,7 +87,7 @@ function SkeletonCards() {
   )
 }
 
-function BookingCard({ booking, onRequestCancel, cancelling }) {
+function BookingCard({ booking, barberName, onRequestCancel, cancelling }) {
   const b = booking
   return (
     <article className="adm-card">
@@ -106,10 +107,14 @@ function BookingCard({ booking, onRequestCancel, cancelling }) {
             <span className="adm-card__val">{b.customer_name}</span>
           </div>
           <div className="adm-card__cell">
+            <span className="adm-card__label">Barber</span>
+            <span className="adm-card__val">{barberName || '—'}</span>
+          </div>
+          <div className="adm-card__cell">
             <span className="adm-card__label">Layanan</span>
             <span className="adm-card__val adm-card__val--display">{b.service}</span>
           </div>
-          <div className="adm-card__cell adm-card__cell--wide">
+          <div className="adm-card__cell">
             <span className="adm-card__label">WhatsApp</span>
             <a
               className="adm-card__wa"
@@ -139,6 +144,8 @@ export default function AdminDashboard() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('today')
   const [bookings, setBookings] = useState([])
+  /** barber id -> name, for "who is cutting at 14:00?" */
+  const [barberNames, setBarberNames] = useState({})
   const [blocks, setBlocks] = useState([])
   const [loadBookingsErr, setLoadBookingsErr] = useState('')
   const [loadBlocksErr, setLoadBlocksErr] = useState('')
@@ -207,6 +214,12 @@ export default function AdminDashboard() {
     }
     refreshBookings()
   }, [navigate, refreshBookings])
+
+  useEffect(() => {
+    fetchBarbers()
+      .then((list) => setBarberNames(Object.fromEntries(list.map((x) => [x.id, x.name]))))
+      .catch(() => {}) // names are a nicety; cards still show '—'
+  }, [])
 
   /** Poll so new customer bookings appear without manual refresh (skip when tab is hidden). */
   useEffect(() => {
@@ -478,8 +491,8 @@ export default function AdminDashboard() {
       <header className="adm-nav">
         <div className="adm-nav__left">
           <span className="adm-nav__brand">
-            <span className="adm-nav__brand-sans">teman</span>{' '}
-            <span className="adm-nav__brand-serif">cukur</span>
+            <span className="adm-nav__brand-sans">paddy&apos;s</span>{' '}
+            <span className="adm-nav__brand-serif">barbershop</span>
           </span>
           <p className="adm-nav__sub">
             ADMIN · WITA · {formatDateLabel(today).toUpperCase()}
@@ -581,6 +594,7 @@ export default function AdminDashboard() {
                   <BookingCard
                     key={b.id}
                     booking={b}
+                    barberName={barberNames[b.barber_id]}
                     onRequestCancel={openCancelDialog}
                     cancelling={cancellingId === String(b.id)}
                   />
@@ -635,6 +649,7 @@ export default function AdminDashboard() {
                       <BookingCard
                         key={b.id}
                         booking={b}
+                        barberName={barberNames[b.barber_id]}
                         onRequestCancel={openCancelDialog}
                         cancelling={cancellingId === String(b.id)}
                       />

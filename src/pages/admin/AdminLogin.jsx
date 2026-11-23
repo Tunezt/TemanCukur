@@ -31,8 +31,8 @@ export default function AdminLogin() {
     <div className="adm adm-login">
       <div className="adm-login__panel">
         <p className="adm-login__brand">
-          <span className="adm-login__brand-sans">teman</span>{' '}
-          <span className="adm-login__brand-serif">cukur</span>
+          <span className="adm-login__brand-sans">paddy&apos;s</span>{' '}
+          <span className="adm-login__brand-serif">barbershop</span>
         </p>
         <form className="adm-login__form" onSubmit={submit} autoComplete="off">
           <label className="adm-login__label" htmlFor="adm-pw">

@@ -3,9 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
 import { createBooking, formatWhatsappForApi } from '../api/booking'
 import { saveBookingContact } from '../bookingContactStorage'
+import { SHOP_WHATSAPP_E164 } from '../shopConfig'
 
-/** Ganti dengan nomor WhatsApp bisnis (tanpa +), contoh: 6281234567890 */
-const WHATSAPP_BUSINESS_E164 = '6281234567890'
 
 function fmtPrice(n) {
   return `Rp ${Number(n).toLocaleString('id-ID')}`
@@ -45,7 +44,7 @@ function buildWhatsAppHref(state, { afterWebConfirm = false } = {}) {
   }
   lines.push('', 'Terima kasih!')
   const text = encodeURIComponent(lines.join('\n'))
-  return `https://wa.me/${WHATSAPP_BUSINESS_E164}?text=${text}`
+  return `https://wa.me/${SHOP_WHATSAPP_E164}?text=${text}`
 }
 
 export default function BookConfirm() {
@@ -161,6 +160,7 @@ export default function BookConfirm() {
             </p>
           </div>
           <div className="bk-success__actions">
+            {SHOP_WHATSAPP_E164 ? (
             <div className="bk-success__wa-group">
               <a
                 className="bk-success-wa"
@@ -180,6 +180,7 @@ export default function BookConfirm() {
                 </p>
               </div>
             </div>
+            ) : null}
             <button
               type="button"
               className="bk-success__home"
@@ -256,7 +257,7 @@ export default function BookConfirm() {
         <div className="confirm-row">
           <span className="confirm-row__label">WhatsApp</span>
           <span className="confirm-row__val confirm-row__val--sans">
-            +62 {state?.whatsapp}
+            +62 {formatWhatsappForApi(state?.whatsapp).slice(3)}
           </span>
         </div>
         {state?.notes ? (
