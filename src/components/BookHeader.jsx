@@ -14,8 +14,8 @@ export default function BookHeader({ step }) {
       </button>
 
       <div className="book-header__brand">
-        <span>PADDY&apos;S</span>
-        <span>BARBERSHOP</span>
+        <span>NORM</span>
+        <span>STUDIO</span>
       </div>
 
       <span className="book-header__step">{step} / 5</span>

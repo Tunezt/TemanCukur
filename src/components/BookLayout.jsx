@@ -34,9 +34,9 @@ export default function BookLayout({
   return (
     <div className={`bl${showSidebarCta ? ' bl--has-cta' : ''}`}>
       <header className="bl__site-header">
-        <Link to="/" className="bl__site-brand" aria-label="Beranda Paddy's Barbershop">
-          <span className="bl__site-brand-line">Paddy&apos;s</span>
-          <span className="bl__site-brand-line bl__site-brand-line--2">Barbershop</span>
+        <Link to="/" className="bl__site-brand" aria-label="Beranda Norm Studio">
+          <span className="bl__site-brand-line">Norm</span>
+          <span className="bl__site-brand-line bl__site-brand-line--2">Studio</span>
         </Link>
         <div className="bl__site-actions">
           <Link to="/" className="bl__site-home">

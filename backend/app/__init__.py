@@ -1,1 +1,1 @@
-# Paddy's Barbershop API package
+# Norm Studio API package

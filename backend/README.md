@@ -1,4 +1,4 @@
-# Paddy's Barbershop API (FastAPI + Supabase)
+# Norm Studio API (FastAPI + Supabase)
 
 ## Setup
 

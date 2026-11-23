@@ -1,6 +1,6 @@
 /** sessionStorage — same device/tab only; clears when the tab closes */
 
-const KEY = 'paddys_booking_contact_v1'
+const KEY = 'normstudio_booking_contact_v1'
 
 /**
  * @param {{ name: string, whatsapp: string, notes?: string }} contact

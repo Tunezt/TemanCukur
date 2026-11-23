@@ -102,13 +102,13 @@ function SplitWord({ text, baseDelay, step = 0.042 }) {
 }
 
 const SHOP_WA_URL = SHOP_WHATSAPP_E164
-  ? `https://wa.me/${SHOP_WHATSAPP_E164}?text=${encodeURIComponent("Halo Paddy's, ")}`
+  ? `https://wa.me/${SHOP_WHATSAPP_E164}?text=${encodeURIComponent("Halo Norm Studio, ")}`
   : null
 
 const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
-  "Business inquiry: Paddy's Barbershop"
+  "Business inquiry: Norm Studio"
 )}&body=${encodeURIComponent(
-  "Hi Paddy's,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n"
+  "Hi Norm Studio,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n"
 )}`
 
 /** Static assets under `public/images/shop/` (WebP, sized for 2x screens). */
@@ -281,8 +281,8 @@ function LandingPage() {
       {/* ── Navbar: bracket links + underlined wordmark (no box) ── */}
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
         <a href="#top" className="navbar__brand" onClick={scrollTop}>
-          <span className="navbar__brand-line">PADDY&apos;S</span>
-          <span className="navbar__brand-line navbar__brand-line--2">BARBERSHOP</span>
+          <span className="navbar__brand-line">NORM</span>
+          <span className="navbar__brand-line navbar__brand-line--2">STUDIO</span>
         </a>
         <div className="navbar__nav" role="navigation" aria-label="Bagian halaman">
           <a href="#top" className="navbar__link navbar__link--paren" onClick={scrollTop}>
@@ -307,14 +307,14 @@ function LandingPage() {
           <div className="hero__text">
             <h1 className="hero__name">
               <span className="hero__name-word">
-                <SplitWord text="Paddy's" baseDelay={0.22} />
+                <SplitWord text="Norm" baseDelay={0.22} />
               </span>
               <em className="hero__name-word">
-                <SplitWord text="Barbershop" baseDelay={0.52} step={0.036} />
+                <SplitWord text="Studio" baseDelay={0.52} step={0.036} />
               </em>
             </h1>
             <p className="hero__role ha ha-role">
-              Balikpapan · Est. {ESTABLISHED_YEAR}
+              Barbershop · Balikpapan · Est. {ESTABLISHED_YEAR}
             </p>
             <div className="hero__cta-row ha ha-cta">
               <button type="button" className="hero__cta" onClick={goBook}>
@@ -416,7 +416,7 @@ function LandingPage() {
             <img
               className="location__image"
               src={INTERIOR_PHOTO.src}
-              alt="Interior Paddy's Barbershop"
+              alt="Interior Norm Studio"
               width={INTERIOR_PHOTO.width}
               height={INTERIOR_PHOTO.height}
               loading="lazy"
@@ -425,7 +425,7 @@ function LandingPage() {
           </div>
           <div className="location__info">
             <p id="location-venue-heading" className="section-label">
-              Paddy's Barbershop
+              Norm Studio
             </p>
             <address className="location__address">
               Jalan Belakang Mall BB, Damai,<br />
@@ -528,8 +528,8 @@ function LandingPage() {
           <div className="footer__bottom">
             <div className="footer__info">
               <div className="footer__brand-mark">
-                <span className="footer__bm-line">PADDY&apos;S</span>
-                <span className="footer__bm-line footer__bm-line--2">BARBERSHOP</span>
+                <span className="footer__bm-line">NORM</span>
+                <span className="footer__bm-line footer__bm-line--2">STUDIO</span>
               </div>
               <p className="footer__meta">
                 Balikpapan Selatan <span className="footer__meta-dot" aria-hidden="true">·</span>{' '}
@@ -573,7 +573,7 @@ function LandingPage() {
           </div>
         </div>
 
-        <p className="footer__copy">© 2026 Paddy&apos;s Barbershop · Balikpapan</p>
+        <p className="footer__copy">© 2026 Norm Studio · Balikpapan</p>
       </footer>
       </main>
     </>

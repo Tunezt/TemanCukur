@@ -32,7 +32,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="Paddy's Barbershop API",
+    title="Norm Studio API",
     version="1.0.0",
     lifespan=lifespan,
 )

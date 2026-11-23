@@ -81,7 +81,7 @@ def build_customer_confirmation_message(
     harga = price_line_for_service(service, service_price)
     barber_line = f"Barber: {barber_name.strip()}\n" if barber_name.strip() else ""
     return (
-        f"Halo {customer_name.strip()}! Booking kamu di Paddy's Barbershop sudah dikonfirmasi.\n"
+        f"Halo {customer_name.strip()}! Booking kamu di Norm Studio sudah dikonfirmasi.\n"
         "\n"
         f"{barber_line}"
         f"Layanan: {service.strip()}\n"
@@ -132,7 +132,7 @@ def build_customer_reminder_message(
 ) -> str:
     barber_line = f"Barber: {barber_name.strip()}\n" if barber_name.strip() else ""
     return (
-        "Reminder: booking kamu di Paddy's Barbershop 2 jam lagi!\n"
+        "Reminder: booking kamu di Norm Studio 2 jam lagi!\n"
         "\n"
         f"{barber_line}"
         f"Layanan: {service.strip()}\n"

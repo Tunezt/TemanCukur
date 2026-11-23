@@ -28,11 +28,11 @@ function buildWhatsAppHref(state, { afterWebConfirm = false } = {}) {
     ? '• Barber: (auto-assign)'
     : `• Barber: ${state?.barber?.name ?? '-'}`
   const lines = [
-    "Halo Paddy's Barbershop,",
+    "Halo Norm Studio,",
     '',
     afterWebConfirm
-      ? "Saya sudah booking lewat website Paddy's Barbershop. Ringkasannya:"
-      : "Saya ingin konfirmasi booking Paddy's Barbershop:",
+      ? "Saya sudah booking lewat website Norm Studio. Ringkasannya:"
+      : "Saya ingin konfirmasi booking Norm Studio:",
     barberLine,
     `• Layanan: ${state?.service?.name ?? '-'}`,
     `• Tanggal: ${state?.date ?? '-'}`,

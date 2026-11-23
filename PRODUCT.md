@@ -1,4 +1,4 @@
-# Paddy's Barbershop
+# Norm Studio
 
 ## Register
 

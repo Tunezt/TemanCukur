@@ -7,7 +7,7 @@
 ## What this project is
 
 **Repo name:** `temancukur`  
-**Product / brand:** **Paddy's Barbershop** — a multi-barber shop in **Balikpapan, Indonesia** (est. 2019).
+**Product / brand:** **Norm Studio** (formerly Paddy's Barbershop, renamed 23 Nov 2026) — a multi-barber shop in **Balikpapan, Indonesia** (est. 2019).
 
 This is a **full-stack side project**: a marketing landing page plus an online booking system for a real local barbershop. Customers book haircuts online; payment happens **in-store** (no payment gateway). Confirmations and reminders go out via **WhatsApp**.
 

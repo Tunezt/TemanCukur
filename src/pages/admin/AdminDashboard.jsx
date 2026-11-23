@@ -491,8 +491,8 @@ export default function AdminDashboard() {
       <header className="adm-nav">
         <div className="adm-nav__left">
           <span className="adm-nav__brand">
-            <span className="adm-nav__brand-sans">paddy&apos;s</span>{' '}
-            <span className="adm-nav__brand-serif">barbershop</span>
+            <span className="adm-nav__brand-sans">norm</span>{' '}
+            <span className="adm-nav__brand-serif">studio</span>
           </span>
           <p className="adm-nav__sub">
             ADMIN · WITA · {formatDateLabel(today).toUpperCase()}
