@@ -8,6 +8,7 @@ from app.booking_reminders import (
     start_reminder_scheduler,
 )
 from app.config import cors_origin_list, get_settings
+from app.routes.admin import login_router as admin_login_router
 from app.routes.admin import router as admin_router
 from app.routes.barbers import router as barbers_router
 from app.routes.bookings import router as bookings_router
@@ -40,6 +41,7 @@ app.add_middleware(
 app.include_router(slots_router, prefix="/api")
 app.include_router(barbers_router, prefix="/api")
 app.include_router(bookings_router, prefix="/api")
+app.include_router(admin_login_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 
 

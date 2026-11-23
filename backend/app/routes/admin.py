@@ -5,8 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.booking_reminders import remove_booking_reminder_job
 from app.db import get_supabase
-from app.deps import verify_admin_key
+from app.deps import admin_password_ok, issue_admin_token, verify_admin_key
 from app.schemas import (
+    AdminLogin,
     BlockCreate,
     BlockCreateResponse,
     BlockOut,
@@ -18,6 +19,14 @@ from app.schemas import (
 from app.supabase_errors import http_exception_for_supabase
 
 router = APIRouter(prefix="/admin", tags=["admin"], dependencies=[Depends(verify_admin_key)])
+login_router = APIRouter(prefix="/admin", tags=["admin"])
+
+
+@login_router.post("/login")
+def admin_login(body: AdminLogin):
+    if not admin_password_ok(body.password):
+        raise HTTPException(status_code=401, detail="Kata sandi salah.")
+    return {"token": issue_admin_token()}
 
 
 def _booking_row(row: dict) -> BookingOut:

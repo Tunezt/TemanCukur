@@ -19,14 +19,17 @@ class Settings(BaseSettings):
 
     supabase_url: str
     supabase_service_key: str
-    admin_api_key: str
+    admin_api_key: str  # server-only secret that signs admin session tokens
+    admin_password: str  # what the owner types on /admin/login
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     # Fonnte WhatsApp (optional locally; set on Railway for notifications)
     fonnte_token: str | None = None
     rifki_whatsapp: str | None = None
 
-    @field_validator("supabase_url", "supabase_service_key", "admin_api_key", mode="before")
+    @field_validator(
+        "supabase_url", "supabase_service_key", "admin_api_key", "admin_password", mode="before"
+    )
     @classmethod
     def strip_secrets(cls, v: object) -> object:
         if isinstance(v, str):

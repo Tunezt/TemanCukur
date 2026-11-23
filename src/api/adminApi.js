@@ -1,8 +1,5 @@
 import { API_BASE_URL, apiUrl, DEV_PROXY_TARGET } from '../config'
-
-/** Must match backend ADMIN_API_KEY. Set VITE_ADMIN_API_KEY on Vercel to your production key. */
-export const ADMIN_API_KEY =
-  import.meta.env.VITE_ADMIN_API_KEY ?? 'temancukur-admin-2026'
+import { clearAdminAuth, getAdminToken } from '../admin/auth'
 
 function uvicornPortHint() {
   try {
@@ -15,7 +12,13 @@ function uvicornPortHint() {
 
 async function fetchOrExplain(url, options = {}) {
   try {
-    return await fetch(url, options)
+    const res = await fetch(url, options)
+    if (res.status === 401 && String(url).includes('/api/admin/') && !String(url).endsWith('/login')) {
+      // Session expired or invalid: back to the login screen.
+      clearAdminAuth()
+      window.location.assign('/admin/login')
+    }
+    return res
   } catch (e) {
     if (e instanceof TypeError) {
       const hint = API_BASE_URL
@@ -32,7 +35,7 @@ async function fetchOrExplain(url, options = {}) {
 function adminHeaders() {
   return {
     Accept: 'application/json',
-    'X-Admin-Key': ADMIN_API_KEY,
+    'X-Admin-Key': getAdminToken(),
   }
 }
 
@@ -64,6 +67,20 @@ function normalizeDetail(data) {
       .join(' ')
   }
   return ''
+}
+
+/** @returns {Promise<string>} session token */
+export async function adminLogin(password) {
+  const res = await fetchOrExplain(apiUrl('/api/admin/login'), {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok || !data.token) {
+    throw new Error(res.status === 401 ? 'Kata sandi salah. Coba lagi.' : normalizeDetail(data) || 'Gagal masuk.')
+  }
+  return data.token
 }
 
 /**

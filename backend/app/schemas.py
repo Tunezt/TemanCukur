@@ -159,3 +159,7 @@ class BlockCreateResponse(BaseModel):
 
 class Message(BaseModel):
     detail: str
+
+
+class AdminLogin(BaseModel):
+    password: str = Field(min_length=1, max_length=200)

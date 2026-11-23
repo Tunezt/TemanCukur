@@ -1,15 +1,28 @@
-const STORAGE_KEY = 'tc_admin_auth'
+// Admin session token issued by the backend (POST /api/admin/login): '<expiry-unix>.<signature>'.
+// The password and signing secret live only on the server.
+const STORAGE_KEY = 'tc_admin_token'
 
-export function isAdminAuthenticated() {
-  return localStorage.getItem(STORAGE_KEY) === '1'
+export function getAdminToken() {
+  try {
+    return localStorage.getItem(STORAGE_KEY) || ''
+  } catch {
+    return ''
+  }
 }
 
-export function setAdminAuthenticated() {
-  localStorage.setItem(STORAGE_KEY, '1')
+export function isAdminAuthenticated() {
+  const exp = Number(getAdminToken().split('.')[0])
+  return Number.isFinite(exp) && exp * 1000 > Date.now()
+}
+
+export function setAdminToken(token) {
+  localStorage.setItem(STORAGE_KEY, token)
 }
 
 export function clearAdminAuth() {
-  localStorage.removeItem(STORAGE_KEY)
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch {
+    /* storage blocked: nothing to clear */
+  }
 }
-
-export const ADMIN_LOGIN_PASSWORD = 'temancukur2026'

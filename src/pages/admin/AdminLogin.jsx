@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import {
-  ADMIN_LOGIN_PASSWORD,
-  isAdminAuthenticated,
-  setAdminAuthenticated,
-} from '../../admin/auth'
+import { isAdminAuthenticated, setAdminToken } from '../../admin/auth'
+import { adminLogin } from '../../api/adminApi'
 import '../../admin/admin.css'
 
 export default function AdminLogin() {
@@ -17,17 +14,17 @@ export default function AdminLogin() {
     return <Navigate to="/admin/dashboard" replace />
   }
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
     setError('')
-    if (password !== ADMIN_LOGIN_PASSWORD) {
-      setError('Kata sandi salah. Coba lagi.')
-      return
-    }
     setBusy(true)
-    setAdminAuthenticated()
-    navigate('/admin/dashboard', { replace: true })
-    setBusy(false)
+    try {
+      setAdminToken(await adminLogin(password))
+      navigate('/admin/dashboard', { replace: true })
+    } catch (err) {
+      setError(err.message)
+      setBusy(false)
+    }
   }
 
   return (

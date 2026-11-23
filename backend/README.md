@@ -5,6 +5,7 @@
 1. Create a Supabase project and run migrations in order:
    - `supabase/migrations/001_schema.sql`
    - `supabase/migrations/002_barbers_and_booking_fields.sql`
+   - `supabase/migrations/003_service_role_grants.sql` (new projects no longer auto-grant table access)
 
 2. Copy `.env.example` to `.env` in this folder (`backend/.env`) and fill in real values (see below). The app resolves that path automatically, so env vars load even if you start Uvicorn from the project root.
 
@@ -46,6 +47,7 @@ Open `http://127.0.0.1:8010/docs` for interactive API docs.
 | GET | `/api/slots?date=YYYY-MM-DD&barber_id=` | — |
 | POST | `/api/bookings` | — |
 | POST | `/api/bookings/{id}/cancel` | — |
+| POST | `/api/admin/login` | — |
 | GET | `/api/admin/bookings` | `X-Admin-Key` |
 | POST | `/api/admin/bookings/{id}/cancel` | `X-Admin-Key` |
 | POST | `/api/admin/blocks` | `X-Admin-Key` |
@@ -55,7 +57,7 @@ Allowed booking times: `09:00`, `10:00`, `11:00`, `13:00`–`19:00` (see `app/co
 
 Slots are per barber. Omit `barber_id` to get the union of free slots across active barbers. Bookings may send `prefer_any_barber: true` to auto-assign the barber with the most availability on that date.
 
-Admin routes require header: `X-Admin-Key: <ADMIN_API_KEY>`.
+Admin login: `POST /api/admin/login {"password": ...}` checks `ADMIN_PASSWORD` on the server and returns a session token (valid 7 days, signed with `ADMIN_API_KEY`). Other admin routes require header `X-Admin-Key: <that token>`. Neither the password nor `ADMIN_API_KEY` is ever shipped to the browser.
 
 ## WhatsApp (Fonnte) and reminders
 
@@ -94,12 +96,12 @@ POST /api/bookings/<uuid>/cancel
 
 ```http
 GET /api/admin/bookings
-X-Admin-Key: your-admin-key
+X-Admin-Key: <token from /api/admin/login>
 ```
 
 ```http
 POST /api/admin/blocks
-X-Admin-Key: your-admin-key
+X-Admin-Key: <token from /api/admin/login>
 Content-Type: application/json
 
 { "date": "2026-04-20", "time": null }
