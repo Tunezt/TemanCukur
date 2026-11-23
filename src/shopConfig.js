@@ -14,17 +14,26 @@
  */
 
 /**
- * PLACEHOLDER: shop WhatsApp in international format without "+", e.g. '6281234567890'.
- * While null, the optional "Kabari lewat WhatsApp" button after booking is hidden,
- * so a demo never opens a chat with a stranger's number.
+ * Shop WhatsApp for customers (client's number, given 23 Nov 2026; its WhatsApp profile name
+ * is "Norm studio"). International format without "+". Used by the WhatsApp buttons on the
+ * landing page and after booking. Set to null to hide them all.
+ * Booking alerts to the shop go to RIFKI_WHATSAPP on the server, a different setting.
  */
-export const SHOP_WHATSAPP_E164 = null
+export const SHOP_WHATSAPP_E164 = '62895342413552'
+export const SHOP_WHATSAPP_DISPLAY = '+62 895-3424-13552'
 
-/** PLACEHOLDER: shop Instagram profile URL. */
-export const INSTAGRAM_URL = 'https://www.instagram.com/'
+/** TikTok from the previous site (@rfkiimhmmd). TO CONFIRM it is the shop's account. */
+export const TIKTOK_URL = 'https://www.tiktok.com/@rfkiimhmmd'
 
-/** PLACEHOLDER: shop business email (the paddysbarbershop.com domain is not confirmed as his). */
-export const BUSINESS_EMAIL = 'hello@paddysbarbershop.com'
+/** PLACEHOLDER: shop Instagram profile URL. While null, every Instagram link is hidden. */
+export const INSTAGRAM_URL = null
+
+/**
+ * PLACEHOLDER: shop business email. While null, the email link is hidden and the
+ * business-inquiry band offers WhatsApp instead. (Old sites used invented addresses
+ * hello@temancukur.com / hello@paddysbarbershop.com; neither is confirmed to receive mail.)
+ */
+export const BUSINESS_EMAIL = null
 
 /** PLACEHOLDER: stock photo of a generic barbershop interior. Replace with a photo of his shop. */
 export const INTERIOR_PHOTO = {

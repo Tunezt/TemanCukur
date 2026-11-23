@@ -1368,6 +1368,12 @@
   box-shadow: 0 10px 18px rgba(10,10,10,0.14);
 }
 
+.location__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 /* Maps link — not a booking CTA */
 .location__cta--maps {
   display: inline-flex;

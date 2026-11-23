@@ -6,6 +6,9 @@ import {
   ESTABLISHED_YEAR,
   INSTAGRAM_URL,
   INTERIOR_PHOTO,
+  SHOP_WHATSAPP_DISPLAY,
+  SHOP_WHATSAPP_E164,
+  TIKTOK_URL,
   LOCATION_MAPS_URL,
   OPENING_DAYS,
   OPENING_HOURS,
@@ -97,6 +100,10 @@ function SplitWord({ text, baseDelay, step = 0.042 }) {
     </span>
   ))
 }
+
+const SHOP_WA_URL = SHOP_WHATSAPP_E164
+  ? `https://wa.me/${SHOP_WHATSAPP_E164}?text=${encodeURIComponent("Halo Paddy's, ")}`
+  : null
 
 const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
   "Business inquiry: Paddy's Barbershop"
@@ -429,17 +436,32 @@ function LandingPage() {
               <p className="location__hours-days">{OPENING_DAYS}</p>
               <p className="location__hours-time">{OPENING_HOURS}</p>
             </div>
-            <a
-              className="location__cta location__cta--maps"
-              href={LOCATION_MAPS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Buka di Maps{' '}
-              <span className="location__cta-arrow" aria-hidden="true">
-                ↗
-              </span>
-            </a>
+            <div className="location__ctas">
+              <a
+                className="location__cta location__cta--maps"
+                href={LOCATION_MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Buka di Maps{' '}
+                <span className="location__cta-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </a>
+              {SHOP_WA_URL ? (
+                <a
+                  className="location__cta location__cta--maps"
+                  href={SHOP_WA_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Chat WhatsApp{' '}
+                  <span className="location__cta-arrow" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              ) : null}
+            </div>
           </div>
         </div>
       </section>
@@ -467,18 +489,33 @@ function LandingPage() {
                 </p>
               </div>
               <div className="footer__close-actions">
-                <a href={BUSINESS_MAILTO} className="footer__close-mail">
-                  ( Write us )
-                </a>
-                <a
-                  href={INSTAGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="footer__close-social"
-                >
-                  [ Instagram ]
-                </a>
-                <span className="footer__close-email">{BUSINESS_EMAIL}</span>
+                {BUSINESS_EMAIL ? (
+                  <a href={BUSINESS_MAILTO} className="footer__close-mail">
+                    ( Write us )
+                  </a>
+                ) : SHOP_WA_URL ? (
+                  <a href={SHOP_WA_URL} target="_blank" rel="noopener noreferrer" className="footer__close-mail">
+                    ( WhatsApp us )
+                  </a>
+                ) : null}
+                {INSTAGRAM_URL ? (
+                  <a
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer__close-social"
+                  >
+                    [ Instagram ]
+                  </a>
+                ) : null}
+                {TIKTOK_URL ? (
+                  <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer" className="footer__close-social">
+                    [ TikTok ]
+                  </a>
+                ) : null}
+                <span className="footer__close-email">
+                  {BUSINESS_EMAIL || (SHOP_WA_URL ? `WhatsApp ${SHOP_WHATSAPP_DISPLAY}` : null)}
+                </span>
               </div>
             </div>
           </div>
@@ -500,6 +537,23 @@ function LandingPage() {
               </p>
             </div>
             <nav className="footer__social" aria-label="Media sosial">
+              {TIKTOK_URL ? (
+                <a
+                  href={TIKTOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer__social-btn"
+                  aria-label="TikTok"
+                >
+                  <svg className="footer__social-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      fill="currentColor"
+                      d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"
+                    />
+                  </svg>
+                </a>
+              ) : null}
+              {INSTAGRAM_URL ? (
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
@@ -514,6 +568,7 @@ function LandingPage() {
                   />
                 </svg>
               </a>
+              ) : null}
             </nav>
           </div>
         </div>
