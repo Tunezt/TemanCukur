@@ -1,21 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
-
-const SERVICES = [
-  {
-    id: 'haircut-wash',
-    name: 'Haircut + wash',
-    price: 120_000,
-    durationLabel: '1 jam',
-  },
-  {
-    id: 'haircut',
-    name: 'Haircut',
-    price: 100_000,
-    durationLabel: '45 menit',
-  },
-]
+import { SERVICES } from '../shopConfig'
 
 function fmtPriceIdr(n) {
   return `Rp ${Number(n).toLocaleString('id-ID')}`

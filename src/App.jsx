@@ -3,9 +3,13 @@ import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import './App.css'
 import {
   BUSINESS_EMAIL,
+  ESTABLISHED_YEAR,
   INSTAGRAM_URL,
   INTERIOR_PHOTO,
   LOCATION_MAPS_URL,
+  OPENING_DAYS,
+  OPENING_HOURS,
+  OPENING_SHORT,
 } from './shopConfig'
 
 import BookBarber   from './pages/BookBarber'
@@ -303,7 +307,7 @@ function LandingPage() {
               </em>
             </h1>
             <p className="hero__role ha ha-role">
-              Balikpapan · Est. 2019
+              Balikpapan · Est. {ESTABLISHED_YEAR}
             </p>
             <div className="hero__cta-row ha ha-cta">
               <button type="button" className="hero__cta" onClick={goBook}>
@@ -422,8 +426,8 @@ function LandingPage() {
             </address>
             <div className="location__rule" role="separator" />
             <div className="location__hours-block">
-              <p className="location__hours-days">Senin – Sabtu</p>
-              <p className="location__hours-time">09.00 – 20.00</p>
+              <p className="location__hours-days">{OPENING_DAYS}</p>
+              <p className="location__hours-time">{OPENING_HOURS}</p>
             </div>
             <a
               className="location__cta location__cta--maps"
@@ -492,7 +496,7 @@ function LandingPage() {
               </div>
               <p className="footer__meta">
                 Balikpapan Selatan <span className="footer__meta-dot" aria-hidden="true">·</span>{' '}
-                Sen–Sab 09.00–20.00
+                {OPENING_SHORT}
               </p>
             </div>
             <nav className="footer__social" aria-label="Media sosial">

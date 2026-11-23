@@ -3,6 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.booking_whatsapp import SERVICE_PRICES_IDR
 from app.constants import ALLOWED_SET, ALLOWED_SLOTS
 
 
@@ -53,7 +54,7 @@ class BookingCreate(BaseModel):
     customer_name: str = Field(..., min_length=1, max_length=200)
     whatsapp: str = Field(..., min_length=5, max_length=32)
     service: str = Field(..., min_length=1, max_length=200)
-    service_price: int = Field(..., ge=0, description="IDR price snapshot at booking time")
+    service_price: int | None = Field(None, description="Ignored; the server sets the price")
     date: str = Field(..., description="YYYY-MM-DD")
     time: str = Field(..., description="HH:MM, must be an allowed slot")
     barber_id: UUID | None = Field(
@@ -64,6 +65,13 @@ class BookingCreate(BaseModel):
         False,
         description="Auto-assign the barber with the most availability on this date",
     )
+
+    @field_validator("service")
+    @classmethod
+    def validate_service(cls, v: str) -> str:
+        if v.strip() not in SERVICE_PRICES_IDR:
+            raise ValueError(f"layanan harus salah satu dari: {', '.join(SERVICE_PRICES_IDR)}")
+        return v.strip()
 
     @field_validator("date")
     @classmethod

@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 PUBLIC_SITE = "https://teman-cukur.vercel.app"
 ADMIN_URL = f"{PUBLIC_SITE}/admin"
 
-# Fallback map if service_price was not stored (legacy rows)
+# The service list and prices the server accepts (keep in sync with src/shopConfig.js SERVICES).
+# PLACEHOLDER prices until the client confirms them.
 SERVICE_PRICES_IDR: Final[dict[str, int]] = {
     "Haircut": 100_000,
     "Haircut + wash": 120_000,

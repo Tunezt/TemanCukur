@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from postgrest.exceptions import APIError
 
 from app.booking_reminders import remove_booking_reminder_job, schedule_booking_reminder
-from app.booking_whatsapp import send_booking_confirmation_wa
+from app.booking_whatsapp import SERVICE_PRICES_IDR, send_booking_confirmation_wa
 from app.db import get_supabase
 from app.schemas import BookingCreate, BookingCreateResponse, BookingOut, CancelResponse
 from app.services import (
@@ -79,12 +79,16 @@ def create_booking(body: BookingCreate):
     except Exception as e:
         raise http_exception_for_supabase(e) from e
 
+    # Price comes from the server's list, never from the browser.
+    service_name = body.service.strip()
+    service_price = SERVICE_PRICES_IDR[service_name]
+
     # Instant web confirm UX keeps status confirmed (schema default remains pending)
     payload = {
         "customer_name": body.customer_name.strip(),
         "whatsapp": body.whatsapp.strip(),
-        "service": body.service.strip(),
-        "service_price": body.service_price,
+        "service": service_name,
+        "service_price": service_price,
         "barber_id": resolved_barber_id,
         "booking_date": body.date,
         "booking_time": body.time,
