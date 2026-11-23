@@ -14,11 +14,11 @@ export default function BookHeader({ step }) {
       </button>
 
       <div className="book-header__brand">
-        <span>TEMAN</span>
-        <span>CUKUR</span>
+        <span>PADDY&apos;S</span>
+        <span>BARBERSHOP</span>
       </div>
 
-      <span className="book-header__step">{step} / 4</span>
+      <span className="book-header__step">{step} / 5</span>
     </header>
   )
 }

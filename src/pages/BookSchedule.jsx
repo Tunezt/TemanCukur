@@ -17,9 +17,15 @@ function isoFromYMD(y, month0, day) {
   return `${y}-${String(month0 + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
+function hasBarberChoice(state) {
+  return Boolean(state?.preferAny || state?.barber?.id)
+}
+
 export default function BookSchedule() {
   const navigate = useNavigate()
   const { state } = useLocation()
+
+  const barberId = state?.preferAny ? null : state?.barber?.id ?? null
 
   const todayIso = todayWitaISO()
   const [ty, tm1] = todayIso.split('-').map(Number)
@@ -39,7 +45,7 @@ export default function BookSchedule() {
   /** When this matches `viewKey`, prefetch for the visible month has finished */
   const [fetchedAvailabilityKey, setFetchedAvailabilityKey] = useState(null)
 
-  const viewKey = `${viewYear}-${viewMonth}`
+  const viewKey = `${viewYear}-${viewMonth}-${barberId ?? 'any'}`
   const monthPrefetchDone = fetchedAvailabilityKey === viewKey
 
   useEffect(() => {
@@ -47,7 +53,7 @@ export default function BookSchedule() {
   }, [])
 
   useEffect(() => {
-    if (!state?.service) {
+    if (!state?.service || !hasBarberChoice(state)) {
       navigate('/book', { replace: true })
     }
   }, [state, navigate])
@@ -83,6 +89,8 @@ export default function BookSchedule() {
   }
 
   useEffect(() => {
+    if (!state?.service || !hasBarberChoice(state)) return
+
     let cancelled = false
     const key = viewKey
 
@@ -107,7 +115,7 @@ export default function BookSchedule() {
 
     Promise.all(
       toFetch.map((iso) =>
-        fetchAvailableSlots(iso)
+        fetchAvailableSlots(iso, barberId)
           .then((data) => ({
             iso,
             ok: Array.isArray(data.slots) && data.slots.length > 0,
@@ -125,7 +133,7 @@ export default function BookSchedule() {
     return () => {
       cancelled = true
     }
-  }, [viewKey, viewYear, viewMonth, daysInMonth, todayIso])
+  }, [viewKey, viewYear, viewMonth, daysInMonth, todayIso, barberId, state])
 
   const isPast = (d) => isoFromYMD(viewYear, viewMonth, d) < todayIso
   const isSunday = (d) => new Date(viewYear, viewMonth, d).getDay() === 0
@@ -157,7 +165,7 @@ export default function BookSchedule() {
     setSlotsLoading(true)
     setSlotsError(null)
 
-    fetchAvailableSlots(iso)
+    fetchAvailableSlots(iso, barberId)
       .then((data) => {
         if (seq !== fetchSeq.current) return
         const slots = Array.isArray(data.slots) ? data.slots : []
@@ -207,18 +215,18 @@ export default function BookSchedule() {
     })
   }
 
-  if (!state?.service) {
+  if (!state?.service || !hasBarberChoice(state)) {
     return null
   }
 
   return (
     <BookLayout
-      step={2}
+      step={3}
       summary={{ ...state, date: panelDate, time: selTime }}
       onContinue={proceed}
       canContinue={!!selDate && !!selTime && !slotsLoading && !slotsError}
     >
-      <p className="bk-step-of">Langkah 2 dari 4</p>
+      <p className="bk-step-of">Langkah 3 dari 5</p>
       <h2 className="bk-title">Pilih tanggal &amp; jam</h2>
       <p className="bk-sub">
         Senin–Sabtu saja. Hari tanpa slot terbuka tidak bisa dipilih. Booking

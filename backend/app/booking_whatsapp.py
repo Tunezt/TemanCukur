@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 PUBLIC_SITE = "https://teman-cukur.vercel.app"
 ADMIN_URL = f"{PUBLIC_SITE}/admin"
 
-# Matches frontend service names → IDR amounts for confirmation text
+# Fallback map if service_price was not stored (legacy rows)
 SERVICE_PRICES_IDR: Final[dict[str, int]] = {
     "Haircut": 100_000,
     "Haircut + wash": 120_000,
@@ -57,7 +57,9 @@ def format_booking_date_display(iso_date: str) -> str:
     return d.strftime("%d/%m/%Y")
 
 
-def price_line_for_service(service: str) -> str:
+def price_line_for_service(service: str, service_price: int | None = None) -> str:
+    if service_price is not None:
+        return f"Harga: {fmt_idr(int(service_price))}"
     name = (service or "").strip()
     amount = SERVICE_PRICES_IDR.get(name)
     if amount is None:
@@ -71,12 +73,16 @@ def build_customer_confirmation_message(
     service: str,
     booking_date: str,
     booking_time: str,
+    barber_name: str = "",
+    service_price: int | None = None,
 ) -> str:
     tanggal = format_booking_date_display(booking_date)
-    harga = price_line_for_service(service)
+    harga = price_line_for_service(service, service_price)
+    barber_line = f"Barber: {barber_name.strip()}\n" if barber_name.strip() else ""
     return (
-        f"Halo {customer_name.strip()}! Booking kamu di teman cukur sudah dikonfirmasi.\n"
+        f"Halo {customer_name.strip()}! Booking kamu di Paddy's Barbershop sudah dikonfirmasi.\n"
         "\n"
+        f"{barber_line}"
         f"Layanan: {service.strip()}\n"
         f"Tanggal: {tanggal}\n"
         f"Jam: {booking_time} WITA\n"
@@ -89,21 +95,24 @@ def build_customer_confirmation_message(
     )
 
 
-def build_rifki_new_booking_message(
+def build_owner_new_booking_message(
     *,
     customer_name: str,
     customer_whatsapp_raw: str,
     service: str,
     booking_date: str,
     booking_time: str,
+    barber_name: str = "",
 ) -> str:
     tanggal = format_booking_date_display(booking_date)
     wa_disp = format_whatsapp_display(customer_whatsapp_raw)
+    barber_line = f"Barber: {barber_name.strip()}\n" if barber_name.strip() else ""
     return (
         "Booking baru masuk!\n"
         "\n"
         f"Pelanggan: {customer_name.strip()}\n"
         f"WhatsApp: {wa_disp}\n"
+        f"{barber_line}"
         f"Layanan: {service.strip()}\n"
         f"Tanggal: {tanggal}\n"
         f"Jam: {booking_time} WITA\n"
@@ -118,14 +127,17 @@ def build_customer_reminder_message(
     customer_name: str,
     service: str,
     booking_time: str,
+    barber_name: str = "",
 ) -> str:
+    barber_line = f"Barber: {barber_name.strip()}\n" if barber_name.strip() else ""
     return (
-        "Reminder: booking kamu di teman cukur 2 jam lagi!\n"
+        "Reminder: booking kamu di Paddy's Barbershop 2 jam lagi!\n"
         "\n"
+        f"{barber_line}"
         f"Layanan: {service.strip()}\n"
         f"Jam: {booking_time} WITA\n"
         "\n"
-        f"Sampai jumpa, {customer_name.strip()}! Kalau mau batal sekarang sudah tidak bisa ya — hubungi Rifki langsung."
+        f"Sampai jumpa, {customer_name.strip()}! Kalau mau batal sekarang sudah tidak bisa ya — hubungi toko langsung."
     )
 
 
@@ -136,6 +148,8 @@ def send_booking_confirmation_wa(
     service: str,
     booking_date: str,
     booking_time: str,
+    barber_name: str = "",
+    service_price: int | None = None,
 ) -> None:
     from app.fonnte import send_fonnte_message
 
@@ -148,20 +162,23 @@ def send_booking_confirmation_wa(
                 service=service,
                 booking_date=booking_date,
                 booking_time=booking_time,
+                barber_name=barber_name,
+                service_price=service_price,
             ),
         )
 
-    rifki_raw = (get_settings().rifki_whatsapp or "").strip()
-    rifki_target = fonnte_target_from_whatsapp(rifki_raw)
-    if rifki_target:
+    owner_raw = (get_settings().rifki_whatsapp or "").strip()
+    owner_target = fonnte_target_from_whatsapp(owner_raw)
+    if owner_target:
         send_fonnte_message(
-            rifki_target,
-            build_rifki_new_booking_message(
+            owner_target,
+            build_owner_new_booking_message(
                 customer_name=customer_name,
                 customer_whatsapp_raw=customer_whatsapp_raw,
                 service=service,
                 booking_date=booking_date,
                 booking_time=booking_time,
+                barber_name=barber_name,
             ),
         )
     else:

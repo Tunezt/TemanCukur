@@ -1,11 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom'
 import '../book.css'
 
-const STEP_NAMES = ['Layanan', 'Jadwal', 'Data', 'Konfirmasi']
+const STEP_NAMES = ['Barber', 'Layanan', 'Jadwal', 'Data', 'Konfirmasi']
 
 function fmtPrice(n) {
   if (n == null || Number.isNaN(Number(n))) return '-'
   return `Rp ${Number(n).toLocaleString('id-ID')}`
+}
+
+function barberSidebarLabel(barber, preferAny) {
+  if (preferAny) return 'Tidak ada preferensi'
+  if (barber?.name) return barber.name
+  return 'Belum dipilih'
 }
 
 export default function BookLayout({
@@ -18,14 +24,19 @@ export default function BookLayout({
   children,
 }) {
   const navigate = useNavigate()
-  const { service, date, time } = summary
+  const { barber, preferAny, service, date, time } = summary
+  const barberLabel = barberSidebarLabel(barber, preferAny)
+  const barberSelected = Boolean(preferAny || barber?.name)
+  const barberInitial = preferAny
+    ? '?'
+    : (barber?.name?.trim()?.[0] || '—').toUpperCase()
 
   return (
     <div className="bl">
       <header className="bl__site-header">
-        <Link to="/" className="bl__site-brand" aria-label="Beranda Teman Cukur">
-          <span className="bl__site-brand-line">Teman</span>
-          <span className="bl__site-brand-line">Cukur</span>
+        <Link to="/" className="bl__site-brand" aria-label="Beranda Paddy's Barbershop">
+          <span className="bl__site-brand-line">Paddy&apos;s</span>
+          <span className="bl__site-brand-line bl__site-brand-line--2">Barbershop</span>
         </Link>
         <div className="bl__site-actions">
           <Link to="/" className="bl__site-home">
@@ -35,7 +46,7 @@ export default function BookLayout({
       </header>
 
       <div className="bl__stepbar" role="navigation" aria-label="Langkah booking">
-        {[1, 2, 3, 4].flatMap((n, i) => {
+        {[1, 2, 3, 4, 5].flatMap((n, i) => {
           const items = []
           if (i > 0) {
             items.push(
@@ -96,12 +107,40 @@ export default function BookLayout({
             <div className="bl__panel-inner">
               <p className="bl__ph">Booking kamu</p>
               <div className="bl__barber">
-                <div className="bl__avatar" aria-hidden="true">
-                  R
-                </div>
+                {barberSelected && !preferAny && barber?.photo_url ? (
+                  <img
+                    className="bl__avatar bl__avatar--photo"
+                    src={barber.photo_url}
+                    alt=""
+                    width={40}
+                    height={40}
+                  />
+                ) : (
+                  <div
+                    className={`bl__avatar${!barberSelected ? ' bl__avatar--empty' : ''}`}
+                    aria-hidden="true"
+                  >
+                    {barberSelected ? barberInitial : '—'}
+                  </div>
+                )}
                 <div>
-                  <p className="bl__barber-name">Rifki Muhammad</p>
-                  <p className="bl__barber-sub">Barber · Balikpapan</p>
+                  <p
+                    className={[
+                      'bl__barber-name',
+                      !barberSelected ? ' bl__barber-name--empty' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    {barberLabel}
+                  </p>
+                  <p className="bl__barber-sub">
+                    {preferAny
+                      ? 'Auto-assign · Balikpapan'
+                      : barber?.specialty
+                        ? barber.specialty
+                        : 'Barber · Balikpapan'}
+                  </p>
                 </div>
               </div>
 

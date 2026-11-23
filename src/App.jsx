@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import './App.css'
 
+import BookBarber   from './pages/BookBarber'
 import BookService  from './pages/BookService'
 import BookSchedule from './pages/BookSchedule'
 import BookDetails  from './pages/BookDetails'
@@ -94,16 +95,16 @@ const LOCATION_MAPS_URL =
 /** Replace with real links */
 const INSTAGRAM_URL = 'https://www.instagram.com/'
 
-/** Replace with Rifki’s real business email */
-const BUSINESS_EMAIL = 'hello@temancukur.com'
+/** Replace with shop business email */
+const BUSINESS_EMAIL = 'hello@paddysbarbershop.com'
 const BUSINESS_MAILTO = `mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent(
-  'Business inquiry: Rifki Muhammad / Teman Cukur'
+  "Business inquiry: Paddy's Barbershop"
 )}&body=${encodeURIComponent(
-  'Hi Rifki,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n'
+  "Hi Paddy's,\n\nI’m reaching out about (hiring / sponsorship / collaboration):\n\n\n"
 )}`
 
 /** Static assets under `public/images/rifki/` (encode spaces in filenames). */
-const rifkiImg = (filename) => `/images/rifki/${encodeURIComponent(filename)}`
+const shopImg = (filename) => `/images/rifki/${encodeURIComponent(filename)}`
 
 /** Hero ticker — trendy cut names in English (industry terms) */
 const HERO_CUT_STYLES = [
@@ -134,17 +135,17 @@ const HERO_CUT_STYLES = [
 
 const CRAFT_ITEMS = [
   {
-    img: rifkiImg('credit_card_1.png'),
+    img: shopImg('credit_card_1.png'),
     title: 'Flow & fade',
     text: 'Volume yang bergerak, fade yang bersih sampai ke neckline. Terlihat styled tanpa terlihat berlebihan.',
   },
   {
-    img: rifkiImg('credit_card_2.png'),
+    img: shopImg('credit_card_2.png'),
     title: 'Texture & taper',
     text: 'Tekstur alami di atas, transisi yang mulus di bawah. Potongan yang enak dilihat bahkan tanpa sisir.',
   },
   {
-    img: rifkiImg('credit_card_3.png'),
+    img: shopImg('credit_card_3.png'),
     title: 'Korean flow',
     text: 'Rambut yang jatuh dengan arah dan bobot yang tepat. Flow yang terlihat disengaja, bukan sekadar panjang.',
   },
@@ -191,19 +192,19 @@ function LandingPage() {
   const heroGallery = useMemo(
     () => [
       {
-        img: rifkiImg(heroMobileLayout ? 'bottom right.png' : 'tall slot.png'),
+        img: shopImg(heroMobileLayout ? 'bottom right.png' : 'tall slot.png'),
         alt: 'Referensi potongan, flow dan taper',
         w: 720,
         h: 960,
       },
       {
-        img: rifkiImg('top right.png'),
+        img: shopImg('top right.png'),
         alt: 'Referensi potongan, tekstur',
         w: 560,
         h: 560,
       },
       {
-        img: rifkiImg('bottom right.png'),
+        img: shopImg('bottom right.png'),
         alt: 'Referensi potongan, fade samping',
         w: 560,
         h: 560,
@@ -272,8 +273,8 @@ function LandingPage() {
       {/* ── Navbar: bracket links + underlined wordmark (no box) ── */}
       <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
         <a href="#top" className="navbar__brand" onClick={scrollTop}>
-          <span className="navbar__brand-line">TEMAN</span>
-          <span className="navbar__brand-line navbar__brand-line--2">CUKUR</span>
+          <span className="navbar__brand-line">PADDY&apos;S</span>
+          <span className="navbar__brand-line navbar__brand-line--2">BARBERSHOP</span>
         </a>
         <div className="navbar__nav" role="navigation" aria-label="Bagian halaman">
           <a href="#top" className="navbar__link navbar__link--paren" onClick={scrollTop}>
@@ -296,17 +297,16 @@ function LandingPage() {
         <div className="hero__inner">
           {/* Text block */}
           <div className="hero__text">
-            <p className="hero__eyebrow ha ha-1">Barbershop · Est. 2019</p>
             <h1 className="hero__name">
               <span className="hero__name-word">
-                <SplitWord text="Rifki" baseDelay={0.22} />
+                <SplitWord text="Paddy's" baseDelay={0.22} />
               </span>
               <em className="hero__name-word">
-                <SplitWord text="Muhammad" baseDelay={0.52} step={0.036} />
+                <SplitWord text="Barbershop" baseDelay={0.52} step={0.036} />
               </em>
             </h1>
             <p className="hero__role ha ha-role">
-              Barber · Flow, fade &amp; tekstur 
+              Balikpapan · Est. 2019
             </p>
             <div className="hero__cta-row ha ha-cta">
               <button type="button" className="hero__cta" onClick={goBook}>
@@ -358,7 +358,7 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* ── Rifki — signature work (personal) ── */}
+      {/* ── Signature work (shop) ── */}
       <section
         id="craft"
         ref={craftRef}
@@ -366,7 +366,7 @@ function LandingPage() {
         aria-labelledby="craft-heading"
       >
         <div className="craft__header">
-          <p className="section-label craft__anim-label">Dari kursi Rifki</p>
+          <p className="section-label craft__anim-label">Dari kursi kami</p>
           <h2 id="craft-heading" className="craft__title craft__anim-title">
             Potongan yang tetap <em>enak</em> dipandang setelah keluar dari kursi.
           </h2>
@@ -393,9 +393,6 @@ function LandingPage() {
           <button type="button" className="craft__cta" onClick={goBook}>
             Booking sekarang
           </button>
-          <a className="craft__tik" href="https://www.tiktok.com/@rfkiimhmmd" target="_blank" rel="noopener noreferrer">
-            Lihat potongan di TikTok ↗
-          </a>
         </div>
       </section>
 
@@ -411,7 +408,7 @@ function LandingPage() {
             <img
               className="location__image"
               src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&h=800&q=80"
-              alt="Interior barbershop Teman Cukur"
+              alt="Interior Paddy's Barbershop"
               width={1200}
               height={800}
               loading="lazy"
@@ -470,15 +467,15 @@ function LandingPage() {
               </div>
               <div className="footer__close-actions">
                 <a href={BUSINESS_MAILTO} className="footer__close-mail">
-                  ( Write Rifki )
+                  ( Write us )
                 </a>
                 <a
-                  href="https://www.tiktok.com/@rfkiimhmmd"
+                  href={INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="footer__close-social"
                 >
-                  [ Portfolio ]
+                  [ Instagram ]
                 </a>
                 <span className="footer__close-email">{BUSINESS_EMAIL}</span>
               </div>
@@ -493,8 +490,8 @@ function LandingPage() {
           <div className="footer__bottom">
             <div className="footer__info">
               <div className="footer__brand-mark">
-                <span className="footer__bm-line">TEMAN</span>
-                <span className="footer__bm-line footer__bm-line--2">CUKUR</span>
+                <span className="footer__bm-line">PADDY&apos;S</span>
+                <span className="footer__bm-line footer__bm-line--2">BARBERSHOP</span>
               </div>
               <p className="footer__meta">
                 Balikpapan Selatan <span className="footer__meta-dot" aria-hidden="true">·</span>{' '}
@@ -502,20 +499,6 @@ function LandingPage() {
               </p>
             </div>
             <nav className="footer__social" aria-label="Media sosial">
-              <a
-                href="https://www.tiktok.com/@rfkiimhmmd"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="footer__social-btn"
-                aria-label="TikTok"
-              >
-                <svg className="footer__social-icon" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"
-                  />
-                </svg>
-              </a>
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
@@ -534,7 +517,7 @@ function LandingPage() {
           </div>
         </div>
 
-        <p className="footer__copy">© 2026 Teman Cukur · Balikpapan</p>
+        <p className="footer__copy">© 2026 Paddy&apos;s Barbershop · Balikpapan</p>
       </footer>
       </main>
     </>
@@ -545,7 +528,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/"               element={<LandingPage />} />
-      <Route path="/book"           element={<BookService />} />
+      <Route path="/book"           element={<BookBarber />} />
+      <Route path="/book/service"   element={<BookService />} />
       <Route path="/book/schedule"  element={<BookSchedule />} />
       <Route path="/book/details"   element={<BookDetails />} />
       <Route path="/book/confirm"   element={<BookConfirm />} />

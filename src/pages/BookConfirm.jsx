@@ -11,6 +11,10 @@ function fmtPrice(n) {
   return `Rp ${Number(n).toLocaleString('id-ID')}`
 }
 
+function hasBarberChoice(state) {
+  return Boolean(state?.preferAny || state?.barber?.id)
+}
+
 /** Clean legacy API phrasing for display */
 function displayBookingError(raw) {
   if (!raw) return ''
@@ -21,12 +25,16 @@ function displayBookingError(raw) {
 }
 
 function buildWhatsAppHref(state, { afterWebConfirm = false } = {}) {
+  const barberLine = state?.preferAny
+    ? '• Barber: (auto-assign)'
+    : `• Barber: ${state?.barber?.name ?? '-'}`
   const lines = [
-    'Halo Rifki,',
+    "Halo Paddy's Barbershop,",
     '',
     afterWebConfirm
-      ? 'Saya sudah booking lewat website Teman Cukur. Ringkasannya:'
-      : 'Saya ingin konfirmasi booking Teman Cukur:',
+      ? "Saya sudah booking lewat website Paddy's Barbershop. Ringkasannya:"
+      : "Saya ingin konfirmasi booking Paddy's Barbershop:",
+    barberLine,
     `• Layanan: ${state?.service?.name ?? '-'}`,
     `• Tanggal: ${state?.date ?? '-'}`,
     `• Waktu: ${state?.time ?? '-'}`,
@@ -53,6 +61,7 @@ export default function BookConfirm() {
 
   useEffect(() => {
     if (
+      !hasBarberChoice(state) ||
       !state?.service ||
       !state?.date ||
       !state?.dateISO ||
@@ -69,18 +78,33 @@ export default function BookConfirm() {
   )
 
   const handleConfirmBooking = async () => {
-    if (!state?.service || !state?.dateISO || !state?.time || !state?.name) return
+    if (
+      !hasBarberChoice(state) ||
+      !state?.service ||
+      !state?.dateISO ||
+      !state?.time ||
+      !state?.name
+    ) {
+      return
+    }
     setSubmitError(null)
     setSubmitting(true)
     try {
       const whatsapp = formatWhatsappForApi(state.whatsapp)
-      await createBooking({
+      const payload = {
         customer_name: state.name.trim(),
         whatsapp,
         service: state.service.name,
+        service_price: Number(state.service.price),
         date: state.dateISO,
         time: state.time,
-      })
+      }
+      if (state.preferAny) {
+        payload.prefer_any_barber = true
+      } else {
+        payload.barber_id = state.barber.id
+      }
+      await createBooking(payload)
       saveBookingContact({
         name: state.name.trim(),
         whatsapp: state.whatsapp,
@@ -97,17 +121,23 @@ export default function BookConfirm() {
   }
 
   const goPickAnotherTime = () => {
-    if (!state?.service) return
+    if (!hasBarberChoice(state) || !state?.service) return
     saveBookingContact({
       name: state.name.trim(),
       whatsapp: state.whatsapp,
       notes: state.notes ?? '',
     })
     setSubmitError(null)
-    navigate('/book/schedule', { state: { service: state.service } })
+    navigate('/book/schedule', {
+      state: {
+        barber: state.barber,
+        preferAny: state.preferAny,
+        service: state.service,
+      },
+    })
   }
 
-  if (!state?.service) {
+  if (!hasBarberChoice(state) || !state?.service) {
     return null
   }
 
@@ -163,16 +193,20 @@ export default function BookConfirm() {
     )
   }
 
+  const barberDisplay = state.preferAny
+    ? 'Tidak ada preferensi'
+    : state.barber?.name
+
   return (
     <BookLayout
-      step={4}
+      step={5}
       summary={state}
       onContinue={() => undefined}
       canContinue={false}
       showSidebarCta={false}
       ctaLabel="Lanjut →"
     >
-      <p className="bk-step-of">Langkah 4 dari 4</p>
+      <p className="bk-step-of">Langkah 5 dari 5</p>
       <h2 className="bk-title">Cek &amp; konfirmasi</h2>
       <p className="bk-sub">
         Periksa detail di bawah, lalu konfirmasi.
@@ -199,6 +233,10 @@ export default function BookConfirm() {
       ) : null}
 
       <div className="confirm-rows">
+        <div className="confirm-row">
+          <span className="confirm-row__label">Barber</span>
+          <span className="confirm-row__val">{barberDisplay}</span>
+        </div>
         <div className="confirm-row">
           <span className="confirm-row__label">Layanan</span>
           <span className="confirm-row__val">{state?.service?.name}</span>

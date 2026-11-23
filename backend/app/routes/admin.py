@@ -26,6 +26,8 @@ def _booking_row(row: dict) -> BookingOut:
         customer_name=row["customer_name"],
         whatsapp=row["whatsapp"],
         service=row["service"],
+        service_price=row.get("service_price"),
+        barber_id=row.get("barber_id"),
         booking_date=str(row["booking_date"]),
         booking_time=row["booking_time"],
         status=row["status"],

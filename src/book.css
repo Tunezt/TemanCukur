@@ -65,9 +65,18 @@
 .bl__site-brand-line {
   font-family: var(--bk-serif);
   font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+.bl__site-brand-line--2 {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  margin-top: 2px;
+  color: var(--bk-muted);
 }
 
 .bl__site-actions {
@@ -345,6 +354,19 @@
   font-size: 1.05rem;
   font-weight: 700;
   flex-shrink: 0;
+  object-fit: cover;
+}
+
+.bl__avatar--photo {
+  padding: 0;
+  display: block;
+}
+
+.bl__avatar--empty {
+  background: transparent;
+  color: var(--bk-faint);
+  border: 1px solid var(--bk-line);
+  font-weight: 500;
 }
 
 .bl__barber-name {
@@ -354,6 +376,14 @@
   color: var(--bk-ink);
   letter-spacing: -0.02em;
   line-height: 1.2;
+}
+
+.bl__barber-name--empty {
+  color: var(--bk-faint);
+  font-weight: 400;
+  font-style: italic;
+  font-family: var(--bk-sans);
+  font-size: 0.88rem;
 }
 
 .bl__barber-sub {
@@ -618,6 +648,105 @@
   color: inherit;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* ── Barber picker ──────────────────────────────── */
+.barber-list {
+  border: 1px solid var(--bk-line);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow:
+    0 1px 0 rgba(12, 12, 12, 0.04),
+    0 12px 32px rgba(12, 12, 12, 0.04);
+}
+
+.barber-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--bk-line);
+  cursor: pointer;
+  transition: background 0.14s ease, transform 0.14s ease, box-shadow 0.14s ease;
+  user-select: none;
+}
+
+.barber-row:last-child {
+  border-bottom: none;
+}
+
+.barber-row:hover:not(.barber-row--sel) {
+  background: #fcfbfa;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 16px rgba(12, 12, 12, 0.06);
+}
+
+.barber-row--sel {
+  background: var(--bk-ink);
+  color: #fff;
+  box-shadow: inset 3px 0 0 #fff3;
+  transform: translateY(-1px);
+}
+
+.barber-row__photo {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #e8e6e3;
+}
+
+.barber-row__photo--fallback,
+.barber-row__photo--any {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--bk-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: var(--bk-ink);
+  color: #fff;
+}
+
+.barber-row--sel .barber-row__photo--fallback,
+.barber-row--sel .barber-row__photo--any {
+  background: #fff;
+  color: var(--bk-ink);
+}
+
+.barber-row__photo--any {
+  background: transparent;
+  color: var(--bk-ink);
+  border: 1px solid var(--bk-line);
+  font-weight: 500;
+}
+
+.barber-row--sel .barber-row__photo--any {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.barber-row__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.barber-row__name {
+  font-family: var(--bk-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: inherit;
+  margin-bottom: 4px;
+}
+
+.barber-row__specialty {
+  font-family: var(--bk-sans);
+  font-size: 0.72rem;
+  color: inherit;
+  opacity: 0.58;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
 }
 
 /* ── Calendar ───────────────────────────────────── */

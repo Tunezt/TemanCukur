@@ -44,12 +44,29 @@ export function filterPastSlotsWita(dateISO, slots) {
 }
 
 /**
- * @param {string} dateISO YYYY-MM-DD
- * @returns {Promise<{ date: string, slots: string[] }>}
+ * @returns {Promise<{ id: string, name: string, specialty: string, photo_url: string | null, sort_order: number }[]>}
  */
-export async function fetchAvailableSlots(dateISO) {
+export async function fetchBarbers() {
+  const res = await fetch(apiUrl('/api/barbers'), {
+    headers: { Accept: 'application/json' },
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const msg = normalizeErrorDetail(data)
+    throw new Error(msg || 'Gagal memuat daftar barber. Coba lagi.')
+  }
+  return Array.isArray(data.barbers) ? data.barbers : []
+}
+
+/**
+ * @param {string} dateISO YYYY-MM-DD
+ * @param {string | null} [barberId] If omitted, returns union of slots free for any barber
+ * @returns {Promise<{ date: string, slots: string[], barber_id?: string | null }>}
+ */
+export async function fetchAvailableSlots(dateISO, barberId = null) {
   const url = new URL(apiUrl('/api/slots'))
   url.searchParams.set('date', dateISO)
+  if (barberId) url.searchParams.set('barber_id', barberId)
   const res = await fetch(url.toString(), {
     headers: { Accept: 'application/json' },
   })
@@ -63,7 +80,16 @@ export async function fetchAvailableSlots(dateISO) {
 }
 
 /**
- * @param {{ customer_name: string, whatsapp: string, service: string, date: string, time: string }} body
+ * @param {{
+ *   customer_name: string,
+ *   whatsapp: string,
+ *   service: string,
+ *   service_price: number,
+ *   date: string,
+ *   time: string,
+ *   barber_id?: string | null,
+ *   prefer_any_barber?: boolean,
+ * }} body
  */
 export async function createBooking(body) {
   const res = await fetch(apiUrl('/api/bookings'), {

@@ -179,10 +179,10 @@
 }
 
 .navbar__brand-line {
-  font-family: var(--sans);
+  font-family: var(--serif);
   font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--white);
   transition: color 0.35s ease;
@@ -193,7 +193,7 @@
   font-family: var(--serif);
   font-style: italic;
   font-weight: 400;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   font-size: 0.72rem;
   margin-top: 2px;
   color: rgba(255, 255, 255, 0.45);
@@ -212,10 +212,37 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px 22px;
   flex: 1;
   min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .navbar {
+    padding: 12px 16px 10px;
+    gap: 12px;
+  }
+
+  .navbar__nav {
+    gap: 4px 8px;
+    justify-content: flex-end;
+  }
+
+  .navbar__link {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+
+  .navbar__brand-line {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+  }
+
+  .navbar__brand-line--2 {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
 }
 
 @media (min-width: 640px) {
@@ -833,7 +860,7 @@
 
 
 /* ════════════════════════════════════════════════
-   CRAFT — Rifki’s work (personal)
+   CRAFT — signature work
    ════════════════════════════════════════════════ */
 
 @keyframes craftHeadIn {

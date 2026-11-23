@@ -9,6 +9,7 @@ from app.booking_reminders import (
 )
 from app.config import cors_origin_list, get_settings
 from app.routes.admin import router as admin_router
+from app.routes.barbers import router as barbers_router
 from app.routes.bookings import router as bookings_router
 from app.routes.slots import router as slots_router
 
@@ -23,7 +24,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="Teman Cukur API",
+    title="Paddy's Barbershop API",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -37,6 +38,7 @@ app.add_middleware(
 )
 
 app.include_router(slots_router, prefix="/api")
+app.include_router(barbers_router, prefix="/api")
 app.include_router(bookings_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 

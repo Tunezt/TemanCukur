@@ -83,7 +83,7 @@ def send_booking_reminder_job(booking_id: str) -> None:
         sb = get_supabase()
         res = (
             sb.table("bookings")
-            .select("customer_name,whatsapp,service,booking_time,status")
+            .select("customer_name,whatsapp,service,booking_time,status,barber_id")
             .eq("id", str(uid))
             .limit(1)
             .execute()
@@ -101,6 +101,23 @@ def send_booking_reminder_job(booking_id: str) -> None:
         logger.info("Reminder job: booking %s not confirmed; skip", booking_id)
         return
 
+    barber_name = ""
+    bid = row.get("barber_id")
+    if bid:
+        try:
+            bres = (
+                sb.table("barbers")
+                .select("name")
+                .eq("id", str(bid))
+                .limit(1)
+                .execute()
+            )
+            brows = bres.data or []
+            if brows:
+                barber_name = brows[0].get("name") or ""
+        except Exception:
+            logger.exception("Reminder job: failed to load barber for %s", booking_id)
+
     target = fonnte_target_from_whatsapp(row.get("whatsapp") or "")
     if not target:
         logger.warning("Reminder job: no WhatsApp target for booking %s", booking_id)
@@ -110,6 +127,7 @@ def send_booking_reminder_job(booking_id: str) -> None:
         customer_name=row.get("customer_name") or "",
         service=row.get("service") or "",
         booking_time=row.get("booking_time") or "",
+        barber_name=barber_name,
     )
     send_fonnte_message(target, msg)
 

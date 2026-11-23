@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
 
 const SERVICES = [
@@ -21,25 +21,47 @@ function fmtPriceIdr(n) {
   return `Rp ${Number(n).toLocaleString('id-ID')}`
 }
 
+function hasBarberChoice(state) {
+  return Boolean(state?.preferAny || state?.barber?.id)
+}
+
 export default function BookService() {
   const navigate = useNavigate()
+  const { state } = useLocation()
   const [selected, setSelected] = useState(null)
 
-  useEffect(() => { window.scrollTo(0, 0) }, [])
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
+  useEffect(() => {
+    if (!hasBarberChoice(state)) {
+      navigate('/book', { replace: true })
+    }
+  }, [state, navigate])
 
   const proceed = () => {
-    if (!selected) return
-    navigate('/book/schedule', { state: { service: selected } })
+    if (!selected || !hasBarberChoice(state)) return
+    navigate('/book/schedule', {
+      state: {
+        ...state,
+        service: selected,
+      },
+    })
+  }
+
+  if (!hasBarberChoice(state)) {
+    return null
   }
 
   return (
     <BookLayout
-      step={1}
-      summary={{ service: selected }}
+      step={2}
+      summary={{ ...state, service: selected }}
       onContinue={proceed}
       canContinue={!!selected}
     >
-      <p className="bk-step-of">Langkah 1 dari 4</p>
+      <p className="bk-step-of">Langkah 2 dari 5</p>
       <h2 className="bk-title">Pilih layanan</h2>
       <p className="bk-sub">Satu layanan per booking.</p>
 

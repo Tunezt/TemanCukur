@@ -1,8 +1,10 @@
-# Teman Cukur API (FastAPI + Supabase)
+# Paddy's Barbershop API (FastAPI + Supabase)
 
 ## Setup
 
-1. Create a Supabase project and run `supabase/migrations/001_schema.sql` in the SQL Editor.
+1. Create a Supabase project and run migrations in order:
+   - `supabase/migrations/001_schema.sql`
+   - `supabase/migrations/002_barbers_and_booking_fields.sql`
 
 2. Copy `.env.example` to `.env` in this folder (`backend/.env`) and fill in real values (see below). The app resolves that path automatically, so env vars load even if you start Uvicorn from the project root.
 
@@ -40,7 +42,8 @@ Open `http://127.0.0.1:8010/docs` for interactive API docs.
 
 | Method | Path | Auth |
 |--------|------|------|
-| GET | `/api/slots?date=YYYY-MM-DD` | — |
+| GET | `/api/barbers` | — |
+| GET | `/api/slots?date=YYYY-MM-DD&barber_id=` | — |
 | POST | `/api/bookings` | — |
 | POST | `/api/bookings/{id}/cancel` | — |
 | GET | `/api/admin/bookings` | `X-Admin-Key` |
@@ -50,14 +53,16 @@ Open `http://127.0.0.1:8010/docs` for interactive API docs.
 
 Allowed booking times: `09:00`, `10:00`, `11:00`, `13:00`–`19:00` (see `app/constants.py`).
 
+Slots are per barber. Omit `barber_id` to get the union of free slots across active barbers. Bookings may send `prefer_any_barber: true` to auto-assign the barber with the most availability on that date.
+
 Admin routes require header: `X-Admin-Key: <ADMIN_API_KEY>`.
 
 ## WhatsApp (Fonnte) and reminders
 
 After a successful `POST /api/bookings`, the API sends:
 
-1. A confirmation to the customer’s WhatsApp (Fonnte).
-2. A “new booking” message to Rifki’s number.
+1. A confirmation to the customer’s WhatsApp (Fonnte), including the assigned barber.
+2. A “new booking” message to the shop owner number (`RIFKI_WHATSAPP`).
 3. A one-off scheduled reminder to the customer **two hours before** the slot (WITA / `Asia/Makassar`), via APScheduler.
 
 If Fonnte is down or misconfigured, the booking is still stored; errors are logged only.

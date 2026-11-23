@@ -34,14 +34,36 @@ def slots_in_inclusive_range(time_from: str, time_to: str) -> list[str]:
 class SlotsResponse(BaseModel):
     date: str
     slots: list[str]
+    barber_id: str | None = None
+
+
+class BarberOut(BaseModel):
+    id: UUID
+    name: str
+    specialty: str
+    photo_url: str | None = None
+    sort_order: int = 0
+
+
+class BarbersResponse(BaseModel):
+    barbers: list[BarberOut]
 
 
 class BookingCreate(BaseModel):
     customer_name: str = Field(..., min_length=1, max_length=200)
     whatsapp: str = Field(..., min_length=5, max_length=32)
     service: str = Field(..., min_length=1, max_length=200)
+    service_price: int = Field(..., ge=0, description="IDR price snapshot at booking time")
     date: str = Field(..., description="YYYY-MM-DD")
     time: str = Field(..., description="HH:MM, must be an allowed slot")
+    barber_id: UUID | None = Field(
+        None,
+        description="Selected barber; omit when prefer_any_barber is true",
+    )
+    prefer_any_barber: bool = Field(
+        False,
+        description="Auto-assign the barber with the most availability on this date",
+    )
 
     @field_validator("date")
     @classmethod
@@ -63,6 +85,8 @@ class BookingOut(BaseModel):
     customer_name: str
     whatsapp: str
     service: str
+    service_price: int | None = None
+    barber_id: UUID | None = None
     booking_date: str
     booking_time: str
     status: str

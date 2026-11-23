@@ -8,7 +8,11 @@ from app.booking_reminders import remove_booking_reminder_job, schedule_booking_
 from app.booking_whatsapp import send_booking_confirmation_wa
 from app.db import get_supabase
 from app.schemas import BookingCreate, BookingCreateResponse, BookingOut, CancelResponse
-from app.services import fetch_available_slots
+from app.services import (
+    fetch_available_slots,
+    fetch_barber_by_id,
+    pick_barber_with_most_availability,
+)
 from app.supabase_errors import http_exception_for_supabase
 
 logger = logging.getLogger(__name__)
@@ -22,6 +26,8 @@ def _row_to_booking(row: dict) -> BookingOut:
         customer_name=row["customer_name"],
         whatsapp=row["whatsapp"],
         service=row["service"],
+        service_price=row.get("service_price"),
+        barber_id=row.get("barber_id"),
         booking_date=str(row["booking_date"]),
         booking_time=row["booking_time"],
         status=row["status"],
@@ -31,20 +37,55 @@ def _row_to_booking(row: dict) -> BookingOut:
 
 @router.post("", response_model=BookingCreateResponse)
 def create_booking(body: BookingCreate):
+    if body.prefer_any_barber and body.barber_id is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Kirim barber_id atau prefer_any_barber, bukan keduanya.",
+        )
+    if not body.prefer_any_barber and body.barber_id is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Pilih barber atau aktifkan prefer_any_barber.",
+        )
+
     sb = get_supabase()
+    barber_name = ""
+    resolved_barber_id: str
+
     try:
-        available = fetch_available_slots(sb, body.date)
+        if body.prefer_any_barber:
+            picked = pick_barber_with_most_availability(sb, body.date, body.time)
+            if not picked:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Slot waktu ini tidak tersedia.",
+                )
+            resolved_barber_id = str(picked["id"])
+            barber_name = picked.get("name") or ""
+        else:
+            barber = fetch_barber_by_id(sb, body.barber_id)
+            if not barber or not barber.get("is_active"):
+                raise HTTPException(status_code=404, detail="Barber tidak ditemukan")
+            resolved_barber_id = str(barber["id"])
+            barber_name = barber.get("name") or ""
+            available = fetch_available_slots(sb, body.date, resolved_barber_id)
+            if body.time not in available:
+                raise HTTPException(
+                    status_code=409,
+                    detail="Slot waktu ini tidak tersedia.",
+                )
+    except HTTPException:
+        raise
     except Exception as e:
         raise http_exception_for_supabase(e) from e
-    if body.time not in available:
-        raise HTTPException(
-            status_code=409,
-            detail="Slot waktu ini tidak tersedia.",
-        )
+
+    # Instant web confirm UX keeps status confirmed (schema default remains pending)
     payload = {
         "customer_name": body.customer_name.strip(),
         "whatsapp": body.whatsapp.strip(),
         "service": body.service.strip(),
+        "service_price": body.service_price,
+        "barber_id": resolved_barber_id,
         "booking_date": body.date,
         "booking_time": body.time,
         "status": "confirmed",
@@ -81,6 +122,8 @@ def create_booking(body: BookingCreate):
             service=booking.service,
             booking_date=booking.booking_date,
             booking_time=booking.booking_time,
+            barber_name=barber_name,
+            service_price=booking.service_price,
         )
         schedule_booking_reminder(
             booking.id,

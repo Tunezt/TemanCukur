@@ -6,6 +6,10 @@ import {
   saveBookingContact,
 } from '../bookingContactStorage'
 
+function hasBarberChoice(state) {
+  return Boolean(state?.preferAny || state?.barber?.id)
+}
+
 export default function BookDetails() {
   const navigate = useNavigate()
   const { state } = useLocation()
@@ -40,7 +44,13 @@ export default function BookDetails() {
   }, [name, phone, notes])
 
   useEffect(() => {
-    if (!state?.service || !state?.date || !state?.dateISO || !state?.time) {
+    if (
+      !hasBarberChoice(state) ||
+      !state?.service ||
+      !state?.date ||
+      !state?.dateISO ||
+      !state?.time
+    ) {
       navigate('/book', { replace: true })
     }
   }, [state, navigate])
@@ -63,18 +73,18 @@ export default function BookDetails() {
     })
   }
 
-  if (!state?.service) {
+  if (!hasBarberChoice(state) || !state?.service) {
     return null
   }
 
   return (
     <BookLayout
-      step={3}
+      step={4}
       summary={state}
       onContinue={proceed}
       canContinue={canContinue}
     >
-      <p className="bk-step-of">Langkah 3 dari 4</p>
+      <p className="bk-step-of">Langkah 4 dari 5</p>
       <h2 className="bk-title">Data kamu</h2>
       <p className="bk-sub">Konfirmasi lewat WhatsApp.</p>
 
