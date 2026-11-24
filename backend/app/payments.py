@@ -143,6 +143,8 @@ def expire_stale_holds(sb) -> int:
 def expire_stale_holds_job() -> None:
     from app.db import get_supabase
 
+    if get_settings().payment_mode == "off":
+        return  # no holds exist; also safe before migration 004 is applied
     try:
         expire_stale_holds(get_supabase())
     except Exception:
