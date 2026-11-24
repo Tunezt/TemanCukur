@@ -2003,3 +2003,5 @@ a.bk-success__home {
   color: var(--bk-ink);
   text-underline-offset: 3px;
 }
+
+.nowrap { white-space: nowrap; }

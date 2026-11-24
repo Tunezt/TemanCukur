@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import BookSuccess from '../components/BookSuccess'
-import { fmtPrice } from '../format'
+import { fmtPrice, fmtTime } from '../format'
 import { cancelBooking, fetchPayment, simulateDemoPayment } from '../api/booking'
 import { PAYMENT_HOLD_MINUTES } from '../shopConfig'
 import '../book.css'
@@ -32,7 +32,7 @@ function summaryFrom(view, flowSummary) {
     barber: { name: view.barber_name },
     service: { name: view.service, price: view.service_price },
     date: fmtDateId(view.booking_date),
-    time: view.booking_time,
+    time: fmtTime(view.booking_time),
   }
 }
 
@@ -181,7 +181,7 @@ export default function BookPay() {
             ? 'Pembayaranmu masuk setelah waktu habis dan slot ini sudah diambil pelanggan lain. Toko akan menghubungimu untuk refund.'
             : cancelled
               ? 'Slot ini sudah dilepas. Pilih jadwal baru kapan saja.'
-              : `Pembayaran belum masuk dalam ${PAYMENT_HOLD_MINUTES} menit, jadi slot ${view.booking_time} WITA dilepas untuk pelanggan lain. Belum ada uang yang tercatat masuk.`
+              : `Pembayaran belum masuk dalam ${PAYMENT_HOLD_MINUTES} menit, jadi slot ${fmtTime(view.booking_time)} WITA dilepas untuk pelanggan lain. Belum ada uang yang tercatat masuk.`
         }
         onAgain={rebookSamePicks}
       />
@@ -275,7 +275,7 @@ export default function BookPay() {
           <div>
             <dt>Jadwal</dt>
             <dd>
-              {fmtDateId(view.booking_date)} · {view.booking_time} WITA
+              {fmtDateId(view.booking_date)} · {fmtTime(view.booking_time)} WITA
             </dd>
           </div>
           <div>

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { fmtTime } from '../format'
 import '../book.css'
 
 const STEP_NAMES = ['Barber', 'Layanan', 'Jadwal', 'Data', 'Konfirmasi']
@@ -184,7 +185,7 @@ export default function BookLayout({
                       .filter(Boolean)
                       .join(' ')}
                   >
-                    {time ?? 'Belum dipilih'}
+                    {time ? fmtTime(time) : 'Belum dipilih'}
                   </p>
                 </div>
               </div>

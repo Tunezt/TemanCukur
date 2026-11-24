@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
 import BookSuccess from '../components/BookSuccess'
-import { fmtPrice } from '../format'
+import { fmtPrice, fmtTime } from '../format'
 import { createBooking, fetchPaymentConfig, formatWhatsappForApi } from '../api/booking'
 import { saveBookingContact } from '../bookingContactStorage'
 
@@ -187,7 +187,7 @@ export default function BookConfirm() {
         </div>
         <div className="confirm-row">
           <span className="confirm-row__label">Waktu</span>
-          <span className="confirm-row__val">{state?.time} WITA</span>
+          <span className="confirm-row__val">{fmtTime(state?.time)} WITA</span>
         </div>
         <div className="confirm-row">
           <span className="confirm-row__label">Nama</span>

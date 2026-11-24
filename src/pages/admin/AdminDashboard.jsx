@@ -8,6 +8,7 @@ import {
   adminListBookings,
 } from '../../api/adminApi'
 import { fetchBarbers } from '../../api/booking'
+import { fmtTime } from '../../format'
 import BlockDateCalendar from '../../components/admin/BlockDateCalendar'
 import { clearAdminAuth, isAdminAuthenticated } from '../../admin/auth'
 import {
@@ -124,7 +125,7 @@ function ExpiredList({ list }) {
         {list.map((b) => (
           <li key={b.id}>
             <span className="adm-expired__when">
-              {formatDateLabel(b.booking_date)} · {b.booking_time}
+              {formatDateLabel(b.booking_date)} · {fmtTime(b.booking_time)}
             </span>
             <span>{b.customer_name}</span>
             <span className="adm-expired__amt">
@@ -147,7 +148,7 @@ function BookingCard({ booking, barberName, onRequestCancel, cancelling }) {
       <div className="adm-card__head">
         <div className="adm-card__head-main">
           <span className="adm-card__time-wrap">
-            <span className="adm-card__time">{b.booking_time}</span>
+            <span className="adm-card__time">{fmtTime(b.booking_time)}</span>
             <span className="adm-card__tz">WITA</span>
           </span>
         </div>
@@ -765,9 +766,9 @@ export default function AdminDashboard() {
             <ul className="adm-section__bullets" aria-label="Cara pemblokiran">
               <li>Hanya Senin–Sabtu (jam sama seperti situs booking).</li>
               <li>
-                Setelah 20:00 WITA, hari ini tidak bisa dipilih. Mulai dari besok.
+                Setelah 20.00 WITA, hari ini tidak bisa dipilih. Mulai dari besok.
               </li>
-              <li>Tidak ada slot 12:00 (jeda makan siang).</li>
+              <li>Tidak ada slot 12.00 (jeda makan siang).</li>
             </ul>
 
             <form className="adm-block-form" onSubmit={submitBlock}>
@@ -830,7 +831,7 @@ export default function AdminDashboard() {
                           className={`adm-slot-chip${pending ? ' adm-slot-chip--on' : ''}${already ? ' adm-slot-chip--blocked' : ''}`}
                           onClick={() => toggleSlot(t)}
                         >
-                          {t}
+                          {fmtTime(t)}
                         </button>
                       )
                     })}
@@ -943,7 +944,7 @@ export default function AdminDashboard() {
                   </span>
                 </>
               ) : null}
-              <span className="adm-modal__time">{cancelDialog.time}</span>
+              <span className="adm-modal__time">{fmtTime(cancelDialog.time)}</span>
             </p>
             {cancelDialog.paidAmount ? (
               <p className="adm-modal__warn">

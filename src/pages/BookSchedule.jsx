@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BookLayout from '../components/BookLayout'
+import { fmtTime } from '../format'
 import { fetchAvailableSlots } from '../api/booking'
 import { todayWitaISO } from '../admin/dates'
 
@@ -321,7 +322,7 @@ export default function BookSchedule() {
               className={`ts-btn${selTime === t ? ' ts-btn--sel' : ''}`}
               onClick={() => setSelTime(t)}
             >
-              {t}
+              {fmtTime(t)}
             </button>
           ))}
         </div>

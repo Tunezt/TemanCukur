@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import '../book.css'
 import { LOCATION_MAPS_URL, SHOP_WHATSAPP_E164 } from '../shopConfig'
-import { fmtPrice } from '../format'
+import { fmtPrice, fmtTime } from '../format'
 
 function buildWhatsAppHref(summary) {
   const barberLine = summary?.preferAny
@@ -14,7 +14,7 @@ function buildWhatsAppHref(summary) {
     barberLine,
     `• Layanan: ${summary?.service?.name ?? '-'}`,
     `• Tanggal: ${summary?.date ?? '-'}`,
-    `• Waktu: ${summary?.time ?? '-'} WITA`,
+    `• Waktu: ${summary?.time ? fmtTime(summary.time) : '-'} WITA`,
     `• Nama: ${summary?.name ?? '-'}`,
   ]
   if (summary?.notes) lines.push(`• Catatan: ${summary.notes}`)
@@ -56,7 +56,7 @@ export default function BookSuccess({ summary, paid = null }) {
           <div>
             <dt>Jadwal</dt>
             <dd>
-              {summary.date} · {summary.time} WITA
+              {summary.date} · <span className="nowrap">{fmtTime(summary.time)} WITA</span>
             </dd>
           </div>
           <div>
