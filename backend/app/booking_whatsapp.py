@@ -89,7 +89,7 @@ def _with_barber(service: str, barber_name: str) -> str:
 def payment_lines(service_price: int | None, paid_amount: int | None, demo: bool = False) -> str:
     """Payment block: what was paid online (and what is left), or what to pay at the shop."""
     if not paid_amount:
-        return f"💵 Bayar di toko: *{fmt_idr(service_price)}*" if service_price else "💵 Bayar di toko"
+        return f"💳 Bayar di toko: *{fmt_idr(service_price)}*" if service_price else "💳 Bayar di toko"
     tag = " _(demo, bukan pembayaran asli)_" if demo else ""
     rest = (service_price or 0) - paid_amount
     if rest > 0:
