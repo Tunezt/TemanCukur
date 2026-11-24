@@ -56,7 +56,7 @@ export default function BookSuccess({ summary, paid = null }) {
           <div>
             <dt>Jadwal</dt>
             <dd>
-              {summary.date} · <span className="nowrap">{fmtTime(summary.time)} WITA</span>
+              {summary.date}<br />{fmtTime(summary.time)} WITA
             </dd>
           </div>
           <div>
