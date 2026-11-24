@@ -239,7 +239,7 @@ export default function BookPay() {
         </p>
 
         <ol className="bk-pay__steps">
-          <li>Buka GoPay, OVO, DANA, ShopeePay atau m-banking.</li>
+          <li>Buka GoPay, OVO, DANA, ShopeePay atau m‑banking.</li>
           <li>Pilih <strong>Scan / Bayar</strong>, arahkan ke QR di atas.</li>
           <li>Halaman ini berubah sendiri begitu pembayaran masuk.</li>
         </ol>
