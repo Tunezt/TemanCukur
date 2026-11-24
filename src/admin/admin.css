@@ -1489,3 +1489,102 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* ── Payment (pay before book) ─────────────────────── */
+.adm-card__status {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+.adm-card__status--paid {
+  color: #0e0e0e;
+  background: var(--adm-gold);
+  border-color: var(--adm-gold);
+}
+.adm-card__status--wait {
+  color: #e2c27d;
+  border-style: dashed;
+  border-color: rgba(226, 194, 125, 0.6);
+  background: transparent;
+}
+.adm-card__status--off {
+  color: var(--adm-muted);
+  border-color: var(--adm-border-strong);
+  background: transparent;
+}
+.adm-card__status--alert {
+  color: #e59a9a;
+  border-color: rgba(229, 154, 154, 0.45);
+  background: var(--adm-danger-bg);
+}
+.adm-card--inactive {
+  opacity: 0.62;
+}
+.adm-card__cell--wide {
+  grid-column: 1 / -1;
+}
+.adm-card__order {
+  display: block;
+  margin-top: 4px;
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--adm-muted);
+  word-break: break-all;
+}
+.adm-note {
+  margin: -0.5rem 0 1.5rem;
+  max-width: 60ch;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--adm-border-strong);
+  border-radius: var(--adm-radius-sm);
+  background: var(--adm-surface);
+  font-family: var(--adm-font);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--adm-ink-soft);
+}
+.adm-note summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--adm-ink);
+}
+.adm-note p {
+  margin: 0.6rem 0 0.2rem;
+}
+.adm-note strong {
+  color: var(--adm-ink);
+  font-weight: 600;
+}
+
+.adm-expired {
+  margin-top: 1.25rem;
+  padding: 0.6rem 0.9rem;
+  border: 1px dashed var(--adm-border-strong);
+  border-radius: var(--adm-radius-sm);
+  font-family: var(--adm-font);
+  font-size: 0.85rem;
+  color: var(--adm-muted);
+}
+.adm-expired summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--adm-ink-soft);
+}
+.adm-expired ul {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+.adm-expired li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding: 0.45rem 0;
+  border-top: 1px solid var(--adm-border);
+}
+.adm-expired__when {
+  color: var(--adm-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.adm-expired__amt {
+  margin-left: auto;
+}

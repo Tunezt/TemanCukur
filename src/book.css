@@ -1610,3 +1610,396 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Pay before book (QRIS) ─────────────────────────── */
+.bk-success,
+.bk-pay {
+  --bk-line: #e6e2db;
+  --bk-paper: #f7f5f1;
+  --bk-faint: #b5b0a8;
+}
+
+.bk-success__facts {
+  width: 100%;
+  margin: 0;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--bk-line);
+  text-align: left;
+}
+.bk-success__facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--bk-line);
+}
+.bk-success__facts dt {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bk-muted);
+  padding-top: 3px;
+}
+.bk-success__facts dd {
+  margin: 0;
+  font-family: var(--bk-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--bk-ink);
+  text-align: right;
+}
+.bk-success__rest {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--bk-sans);
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: var(--bk-muted);
+}
+.bk-success__card > .bk-success__facts {
+  animation: bkSuccessRise 0.58s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.24s;
+}
+.bk-success__check--muted {
+  border-color: var(--bk-faint);
+}
+.bk-success__check--muted svg {
+  stroke: var(--bk-muted);
+}
+a.bk-success__home {
+  text-decoration: none;
+}
+
+.bk-pay {
+  --bk-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --bk-sans: 'Work Sans', system-ui, -apple-system, sans-serif;
+  --bk-ink: #0c0c0c;
+  --bk-muted: #6e6a63;
+  --bk-alert: #9a3412;
+
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px 48px;
+  background: linear-gradient(180deg, #efeae4 0%, #f7f5f1 40%, #fff 100%);
+  font-family: var(--bk-sans);
+  color: var(--bk-ink);
+}
+.bk-pay--loading {
+  justify-content: center;
+  gap: 12px;
+}
+
+.bk-pay__top {
+  width: 100%;
+  max-width: 26rem;
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
+.bk-pay__card {
+  width: 100%;
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 22px 22px;
+  background: #fff;
+  border: 1px solid rgba(12, 12, 12, 0.1);
+  border-radius: 3px;
+  box-shadow: 0 30px 60px -30px rgba(12, 12, 12, 0.16);
+  animation: bkSuccessRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.bk-pay__kicker {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--bk-muted);
+}
+.bk-pay__title {
+  margin: -12px 0 0;
+  font-family: var(--bk-serif);
+  font-size: clamp(1.6rem, 6vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+.bk-pay__title em {
+  font-style: italic;
+}
+
+.bk-pay__timer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bk-pay__timer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bk-muted);
+}
+.bk-pay__clock {
+  font-family: var(--bk-serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--bk-muted);
+}
+.bk-pay__safe {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--bk-muted);
+}
+.bk-pay__bar {
+  height: 2px;
+  background: var(--bk-line);
+  overflow: hidden;
+}
+.bk-pay__bar span {
+  display: block;
+  height: 100%;
+  background: var(--bk-muted);
+  transform-origin: left;
+  transition: transform 1s linear;
+}
+.bk-pay__timer--urgent .bk-pay__clock {
+  font-weight: 600;
+}
+.bk-pay__timer--urgent .bk-pay__clock,
+.bk-pay__timer--urgent .bk-pay__timer-row > span:first-child {
+  color: var(--bk-alert);
+}
+.bk-pay__timer--urgent .bk-pay__bar span {
+  background: var(--bk-alert);
+}
+
+.bk-pay__amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--bk-line);
+  border-bottom: 1px solid var(--bk-line);
+}
+.bk-pay__amount-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bk-muted);
+}
+.bk-pay__amount-val {
+  font-family: var(--bk-serif);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.bk-pay__amount-rest {
+  width: 100%;
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--bk-muted);
+}
+
+.bk-pay__qr {
+  position: relative;
+  margin: 0;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 12px;
+  border: 1px solid var(--bk-line);
+  background: #fff;
+}
+.bk-pay__qr img {
+  display: block;
+  width: min(240px, 62vw);
+  height: auto;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+}
+.bk-pay__qr figcaption {
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--bk-faint);
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+  text-align: center;
+}
+.bk-pay__demo-tag {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 3px 10px;
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--bk-ink);
+}
+
+.bk-pay__steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--bk-ink);
+}
+.bk-pay__steps li::marker {
+  font-family: var(--bk-serif);
+  font-weight: 600;
+  color: var(--bk-muted);
+}
+
+.bk-pay__same-phone {
+  padding: 12px 14px;
+  background: var(--bk-paper);
+  border: 1px solid var(--bk-line);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.bk-pay__same-phone p {
+  margin: 0 0 10px;
+  color: var(--bk-muted);
+}
+.bk-pay__same-phone strong {
+  color: var(--bk-ink);
+  font-weight: 600;
+}
+.bk-pay__save {
+  display: inline-block;
+  padding: 10px 14px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bk-ink);
+  text-decoration: none;
+  border: 1px solid var(--bk-ink);
+  background: #fff;
+}
+.bk-pay__save:hover {
+  background: var(--bk-ink);
+  color: #fff;
+}
+
+.bk-pay__status {
+  margin: -6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bk-muted);
+}
+.bk-pay__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bk-ink);
+  animation: bkPayPulse 1.6s ease-in-out infinite;
+}
+@keyframes bkPayPulse {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+.bk-pay__error {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: var(--bk-alert);
+  border-left: 2px solid var(--bk-alert);
+  background: #fff7ed;
+}
+
+.bk-pay__demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bk-pay__demo-note {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--bk-muted);
+  text-align: center;
+}
+
+.bk-pay__summary {
+  margin: 0;
+  display: grid;
+  border-top: 1px solid var(--bk-line);
+}
+.bk-pay__summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bk-line);
+  font-size: 0.85rem;
+}
+.bk-pay__summary dt {
+  color: var(--bk-muted);
+}
+.bk-pay__summary dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bk-pay__card,
+  .bk-success__card > .bk-success__facts,
+  .bk-pay__pulse {
+    animation: none !important;
+  }
+  .bk-pay__bar span {
+    transition: none;
+  }
+}
+
+/* Confirm step on phones: the rows above already show the whole booking */
+@media (max-width: 900px) {
+  .bl--step-5 .bl__panel {
+    display: none;
+  }
+}
+.bk-success__map {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--bk-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bk-ink);
+  text-underline-offset: 3px;
+}

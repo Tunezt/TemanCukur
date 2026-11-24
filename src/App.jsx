@@ -20,6 +20,7 @@ import BookService  from './pages/BookService'
 import BookSchedule from './pages/BookSchedule'
 import BookDetails  from './pages/BookDetails'
 import BookConfirm  from './pages/BookConfirm'
+import BookPay      from './pages/BookPay'
 import AdminLogin from './pages/admin/AdminLogin'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import { isAdminAuthenticated } from './admin/auth'
@@ -589,6 +590,7 @@ export default function App() {
       <Route path="/book/schedule"  element={<BookSchedule />} />
       <Route path="/book/details"   element={<BookDetails />} />
       <Route path="/book/confirm"   element={<BookConfirm />} />
+      <Route path="/book/pay/:bookingId" element={<BookPay />} />
       <Route path="/admin"         element={<AdminIndex />} />
       <Route path="/admin/login"   element={<AdminLogin />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />

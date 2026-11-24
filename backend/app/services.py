@@ -8,7 +8,7 @@ from supabase import Client
 from app.constants import ALLOWED_SLOTS, SHOP_TZ
 
 # Statuses that occupy a slot (future-proof beyond confirmed-only)
-_ACTIVE_BOOKING_STATUSES = ("pending", "confirmed")
+_ACTIVE_BOOKING_STATUSES = ("pending", "awaiting_payment", "confirmed")
 
 
 def _filter_past_slots_for_today(date_str: str, slots: list[str]) -> list[str]:

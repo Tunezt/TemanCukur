@@ -3,7 +3,9 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Query
 
+from app.config import get_settings
 from app.db import get_supabase
+from app.payments import expire_stale_holds
 from app.schemas import SlotsResponse
 from app.services import fetch_available_slots, fetch_barber_by_id
 from app.supabase_errors import http_exception_for_supabase
@@ -36,6 +38,8 @@ def get_slots(
             raise HTTPException(status_code=404, detail="Barber tidak ditemukan")
 
     try:
+        if get_settings().payment_mode != "off":
+            expire_stale_holds(sb)
         slots = fetch_available_slots(
             sb, day, str(barber_id) if barber_id else None
         )

@@ -87,10 +87,63 @@ function SkeletonCards() {
   )
 }
 
+function fmtRp(n) {
+  return `Rp ${Number(n).toLocaleString('id-ID')}`
+}
+
+/** Booking states the owner sees: slot taken (active) or a payment that needs attention. */
+const ACTIVE_STATUSES = ['confirmed', 'awaiting_payment']
+function isShown(b) {
+  return ACTIVE_STATUSES.includes(b.status) || b.payment_status === 'expired' || b.payment_status === 'paid_late'
+}
+
+/** Pill text + tone for a booking, payment first. */
+function witaClock(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Makassar' })
+}
+
+function statusPill(b) {
+  if (b.payment_status === 'paid_late') return { text: 'Dibayar telat · refund', tone: 'alert' }
+  if (b.status === 'awaiting_payment') {
+    const until = witaClock(b.payment_expires_at)
+    return { text: until ? `Menunggu bayar s/d ${until}` : 'Menunggu bayar', tone: 'wait' }
+  }
+  if (b.status === 'expired' || b.payment_status === 'expired') return { text: 'Kedaluwarsa', tone: 'off' }
+  if (b.payment_status === 'paid') return { text: '✓ Lunas', tone: 'paid' }
+  return { text: 'Dikonfirmasi', tone: 'ok' }
+}
+
+/** Unpaid holds that ran out: one compact line each, so they don't crowd the real bookings. */
+function ExpiredList({ list }) {
+  if (!list.length) return null
+  return (
+    <details className="adm-expired">
+      <summary>Pembayaran kedaluwarsa ({list.length})</summary>
+      <ul>
+        {list.map((b) => (
+          <li key={b.id}>
+            <span className="adm-expired__when">
+              {formatDateLabel(b.booking_date)} · {b.booking_time}
+            </span>
+            <span>{b.customer_name}</span>
+            <span className="adm-expired__amt">
+              {b.payment_amount != null ? fmtRp(b.payment_amount) : ''}
+              {b.payment_status === 'paid_late' ? ' · dibayar telat, refund' : ''}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+
 function BookingCard({ booking, barberName, onRequestCancel, cancelling }) {
   const b = booking
+  const pill = statusPill(b)
+  const active = ACTIVE_STATUSES.includes(b.status)
   return (
-    <article className="adm-card">
+    <article className={`adm-card${active ? '' : ' adm-card--inactive'}`}>
       <div className="adm-card__head">
         <div className="adm-card__head-main">
           <span className="adm-card__time-wrap">
@@ -98,7 +151,7 @@ function BookingCard({ booking, barberName, onRequestCancel, cancelling }) {
             <span className="adm-card__tz">WITA</span>
           </span>
         </div>
-        <span className="adm-card__status">Dikonfirmasi</span>
+        <span className={`adm-card__status adm-card__status--${pill.tone}`}>{pill.text}</span>
       </div>
       <div className="adm-card__body">
         <div className="adm-card__grid">
@@ -125,18 +178,47 @@ function BookingCard({ booking, barberName, onRequestCancel, cancelling }) {
               {b.whatsapp}
             </a>
           </div>
+          {b.payment_amount != null ? (
+            <div className="adm-card__cell adm-card__cell--wide">
+              <span className="adm-card__label">Pembayaran QRIS</span>
+              <span className="adm-card__val">
+                {fmtRp(b.payment_amount)}
+              </span>
+              {b.payment_order_id ? (
+                <span className="adm-card__order" title="Order ID di Midtrans">
+                  {b.payment_order_id}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
-      <button
-        type="button"
-        className="adm-card__cancel"
-        disabled={cancelling}
-        onClick={() => onRequestCancel(b)}
-      >
-        <IconCancelX />
-        <span>{cancelling ? 'Membatalkan…' : 'Batalkan booking'}</span>
-      </button>
+      {active ? (
+        <button
+          type="button"
+          className="adm-card__cancel"
+          disabled={cancelling}
+          onClick={() => onRequestCancel(b)}
+        >
+          <IconCancelX />
+          <span>{cancelling ? 'Membatalkan…' : 'Batalkan booking'}</span>
+        </button>
+      ) : null}
     </article>
+  )
+}
+
+function RefundNote() {
+  return (
+    <details className="adm-note">
+      <summary>Cara refund</summary>
+      <p>
+        Refund dilakukan manual. Kirim balik uang ke pelanggan lewat transfer atau e-wallet, lalu tekan
+        <strong> Batalkan booking</strong>. Status <strong>Dibayar telat</strong> artinya uang masuk setelah
+        15 menit dan slotnya sudah diambil orang lain: hubungi pelanggan dan kembalikan uangnya. Order ID
+        di kartu booking cocok dengan transaksi di dashboard Midtrans.
+      </p>
+    </details>
   )
 }
 
@@ -179,8 +261,7 @@ export default function AdminDashboard() {
     setLoadingBookings(true)
     try {
       const rows = await adminListBookings({ from: today })
-      const confirmed = rows.filter((b) => b.status === 'confirmed')
-      setBookings(confirmed)
+      setBookings(rows.filter(isShown))
     } catch (e) {
       setBookings([])
       setLoadBookingsErr(
@@ -285,15 +366,23 @@ export default function AdminDashboard() {
     )
   }, [blockedTimesForSelectedDate, blockMode])
 
+  /** Cards: bookings that hold a slot, plus late payments that need a refund. */
+  const cardBookings = useMemo(
+    () => bookings.filter((b) => ACTIVE_STATUSES.includes(b.status) || b.payment_status === 'paid_late'),
+    [bookings]
+  )
+  const expiredToday = bookings.filter((b) => b.payment_status === 'expired' && b.booking_date === today)
+  const expiredUpcoming = bookings.filter((b) => b.payment_status === 'expired' && b.booking_date > today)
+
   const todayList = useMemo(() => {
-    const list = bookings.filter((b) => b.booking_date === today)
+    const list = cardBookings.filter((b) => b.booking_date === today)
     return [...list].sort((a, b) =>
       a.booking_time.localeCompare(b.booking_time)
     )
-  }, [bookings, today])
+  }, [cardBookings, today])
 
   const upcomingGrouped = useMemo(() => {
-    const list = bookings.filter((b) => b.booking_date > today)
+    const list = cardBookings.filter((b) => b.booking_date > today)
     const sorted = [...list].sort((a, b) => {
       const dc = a.booking_date.localeCompare(b.booking_date)
       return dc !== 0 ? dc : a.booking_time.localeCompare(b.booking_time)
@@ -305,13 +394,14 @@ export default function AdminDashboard() {
       map.get(k).push(b)
     }
     return map
-  }, [bookings, today])
+  }, [cardBookings, today])
 
   const upcomingCount = useMemo(() => {
     let n = 0
     for (const [, list] of upcomingGrouped) n += list.length
     return n
   }, [upcomingGrouped])
+  const todayActiveCount = todayList.length
 
   const logout = () => {
     clearAdminAuth()
@@ -328,6 +418,7 @@ export default function AdminDashboard() {
     try {
       await adminCancelBooking(id)
       setBookings((prev) => prev.filter((b) => String(b.id) !== id))
+      void refreshBookings()
       showToast('Booking dibatalkan.', 'success')
     } catch (e) {
       const msg =
@@ -345,6 +436,7 @@ export default function AdminDashboard() {
       time: b.booking_time,
       service: b.service ?? '-',
       dateLabel: b.booking_date ? formatDateLabel(b.booking_date) : null,
+      paidAmount: b.payment_status === 'paid' ? b.payment_amount : null,
     })
   }
 
@@ -528,7 +620,7 @@ export default function AdminDashboard() {
         >
           Hari ini
           {hasBookingsData ? (
-            <span className="adm-tab__badge">{todayList.length}</span>
+            <span className="adm-tab__badge">{todayActiveCount}</span>
           ) : null}
         </button>
         <button
@@ -564,8 +656,9 @@ export default function AdminDashboard() {
               Jadwal hari ini
             </h2>
             <p className="adm-section__lede">
-              Booking terkonfirmasi untuk {formatDateLabel(today)}.
+              Booking untuk {formatDateLabel(today)}, termasuk yang masih menunggu bayar.
             </p>
+            <RefundNote />
             {loadBookingsErr ? (
               <div className="adm-panel adm-panel--err" role="alert">
                 <p className="adm-panel__title">Gagal memuat booking</p>
@@ -601,6 +694,7 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : null}
+            {!loadingBookings && !loadBookingsErr ? <ExpiredList list={expiredToday} /> : null}
           </section>
         )}
 
@@ -610,6 +704,7 @@ export default function AdminDashboard() {
               Yang akan datang
             </h2>
             <p className="adm-section__lede">Setelah hari ini, urut tanggal terdekat.</p>
+            <RefundNote />
             {loadBookingsErr ? (
               <div className="adm-panel adm-panel--err" role="alert">
                 <p className="adm-panel__title">Gagal memuat booking</p>
@@ -658,6 +753,7 @@ export default function AdminDashboard() {
                 </div>
               ))
             ) : null}
+            {!loadingBookings && !loadBookingsErr ? <ExpiredList list={expiredUpcoming} /> : null}
           </section>
         )}
 
@@ -849,6 +945,12 @@ export default function AdminDashboard() {
               ) : null}
               <span className="adm-modal__time">{cancelDialog.time}</span>
             </p>
+            {cancelDialog.paidAmount ? (
+              <p className="adm-modal__warn">
+                Pelanggan sudah membayar {fmtRp(cancelDialog.paidAmount)}. Refund dilakukan manual:
+                kirim balik uangnya ke pelanggan.
+              </p>
+            ) : null}
             <p className="adm-modal__warn">Tindakan ini tidak bisa dibatalkan.</p>
             <div className="adm-modal__actions">
               <button

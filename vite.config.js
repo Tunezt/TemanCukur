@@ -14,6 +14,12 @@ export default defineConfig(({ mode }) => {
     resolve: {
       dedupe: ['react', 'react-dom', 'react-router-dom'],
     },
+    // Two HTML shells, same app: admin.html carries noindex and its own title (vercel.json routes /admin to it).
+    build: {
+      rollupOptions: {
+        input: { main: 'index.html', admin: 'admin.html' },
+      },
+    },
     // Bind all interfaces so http://127.0.0.1:5173 works on Windows (not only [::1]).
     server: {
       host: true,

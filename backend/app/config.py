@@ -1,6 +1,8 @@
 from functools import lru_cache
 from pathlib import Path
 
+from typing import Literal
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -27,6 +29,12 @@ class Settings(BaseSettings):
     fonnte_token: str | None = None
     rifki_whatsapp: str | None = None
 
+    # Pay before book: off = no online payment; demo = sample QR + simulate button;
+    # midtrans = real QRIS via Midtrans Core API (needs MIDTRANS_SERVER_KEY).
+    payment_mode: Literal["off", "demo", "midtrans"] = "off"
+    midtrans_server_key: str | None = None
+    midtrans_is_production: bool = False
+
     @field_validator(
         "supabase_url", "supabase_service_key", "admin_api_key", "admin_password", mode="before"
     )
@@ -36,13 +44,18 @@ class Settings(BaseSettings):
             return v.strip()
         return v
 
+    @field_validator("payment_mode", mode="before")
+    @classmethod
+    def normalize_payment_mode(cls, v: object) -> object:
+        return v.strip().lower() if isinstance(v, str) else v
+
     @field_validator("supabase_url", mode="after")
     @classmethod
     def normalize_supabase_url(cls, v: str) -> str:
         # Trailing slash breaks some PostgREST client URLs.
         return v.rstrip("/")
 
-    @field_validator("fonnte_token", "rifki_whatsapp", mode="before")
+    @field_validator("fonnte_token", "rifki_whatsapp", "midtrans_server_key", mode="before")
     @classmethod
     def optional_strip(cls, v: object) -> object:
         if v is None:

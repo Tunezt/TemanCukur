@@ -1,6 +1,11 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://temancukur-production.up.railway.app/api/:path*" },
+    { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin/:path*", "destination": "/admin.html" },
     { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    { "source": "/admin(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }
   ]
 }

@@ -132,3 +132,34 @@ export function formatWhatsappForApi(input) {
   else if (!d.startsWith('62')) d = '62' + d
   return '+' + d
 }
+
+async function getJson(path, init) {
+  const res = await fetch(apiUrl(path), { headers: { Accept: 'application/json' }, ...init })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const err = new Error(normalizeErrorDetail(data) || 'Terjadi kesalahan. Coba lagi.')
+    err.status = res.status
+    throw err
+  }
+  return data
+}
+
+/** @returns {Promise<{ mode: 'off' | 'demo' | 'midtrans', deposit_idr: number | null, hold_minutes: number }>} */
+export function fetchPaymentConfig() {
+  return getJson('/api/payment-config')
+}
+
+/** Payment screen state for one booking (polled). */
+export function fetchPayment(bookingId) {
+  return getJson(`/api/bookings/${encodeURIComponent(bookingId)}/payment`)
+}
+
+/** Demo mode only: the server refuses this in any other mode. */
+export function simulateDemoPayment(bookingId) {
+  return getJson(`/api/bookings/${encodeURIComponent(bookingId)}/demo-pay`, { method: 'POST' })
+}
+
+/** Give up a held slot (or cancel a booking) so someone else can take it. */
+export function cancelBooking(bookingId) {
+  return getJson(`/api/bookings/${encodeURIComponent(bookingId)}/cancel`, { method: 'POST' })
+}

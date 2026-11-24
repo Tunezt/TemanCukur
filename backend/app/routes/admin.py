@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.booking_reminders import remove_booking_reminder_job
 from app.db import get_supabase
+from app.payments import after_cancel
 from app.deps import admin_password_ok, issue_admin_token, verify_admin_key
 from app.schemas import (
     AdminLogin,
@@ -41,6 +42,11 @@ def _booking_row(row: dict) -> BookingOut:
         booking_time=row["booking_time"],
         status=row["status"],
         created_at=str(row["created_at"]),
+        payment_status=row.get("payment_status"),
+        payment_amount=row.get("payment_amount"),
+        payment_order_id=row.get("payment_order_id"),
+        payment_expires_at=str(row["payment_expires_at"]) if row.get("payment_expires_at") else None,
+        paid_at=str(row["paid_at"]) if row.get("paid_at") else None,
     )
 
 
@@ -87,14 +93,14 @@ def list_bookings(
 
 @router.post("/bookings/{booking_id}/cancel", response_model=CancelResponse)
 def admin_cancel_booking(booking_id: UUID):
-    """Cancel a confirmed booking (admin UI; requires X-Admin-Key)."""
+    """Cancel a confirmed booking or an unpaid hold (admin UI; requires X-Admin-Key)."""
     sb = get_supabase()
     try:
         res = (
             sb.table("bookings")
             .update({"status": "cancelled"})
             .eq("id", str(booking_id))
-            .eq("status", "confirmed")
+            .in_("status", ["confirmed", "awaiting_payment"])
             .execute()
         )
     except Exception as e:
@@ -106,6 +112,7 @@ def admin_cancel_booking(booking_id: UUID):
             detail="Booking tidak ditemukan atau sudah dibatalkan",
         )
     remove_booking_reminder_job(booking_id)
+    after_cancel(sb, rows[0])
     return CancelResponse(ok=True, booking=_booking_row(rows[0]))
 
 

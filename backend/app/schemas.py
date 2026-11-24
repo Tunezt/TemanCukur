@@ -99,10 +99,41 @@ class BookingOut(BaseModel):
     booking_time: str
     status: str
     created_at: str
+    payment_status: str | None = None
+    payment_amount: int | None = None
+    payment_order_id: str | None = None
+    payment_expires_at: str | None = None
+    paid_at: str | None = None
+
+
+class PaymentView(BaseModel):
+    """What the customer's payment screen needs (polled every few seconds)."""
+
+    booking_id: UUID
+    status: str  # awaiting_payment | confirmed | expired | cancelled
+    payment_status: str | None
+    mode: str | None
+    amount: int | None
+    service_price: int | None
+    order_id: str | None
+    qr_url: str | None
+    seconds_left: int
+    customer_name: str
+    service: str
+    barber_name: str
+    booking_date: str
+    booking_time: str
+
+
+class PaymentConfig(BaseModel):
+    mode: str
+    deposit_idr: int | None
+    hold_minutes: int
 
 
 class BookingCreateResponse(BaseModel):
     booking: BookingOut
+    payment: PaymentView | None = None
 
 
 class CancelResponse(BaseModel):

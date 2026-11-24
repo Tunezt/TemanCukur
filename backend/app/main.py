@@ -10,9 +10,11 @@ from app.booking_reminders import (
     start_reminder_scheduler,
 )
 from app.config import cors_origin_list, get_settings
+from app.payments import expire_stale_holds_job
 from app.routes.admin import login_router as admin_login_router
 from app.routes.admin import router as admin_router
 from app.routes.barbers import router as barbers_router
+from app.routes.bookings import payments_router
 from app.routes.bookings import router as bookings_router
 from app.routes.slots import router as slots_router
 
@@ -25,8 +27,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)  # skip a line per Supabase
 async def lifespan(_: FastAPI):
     # Validate env early
     get_settings()
-    start_reminder_scheduler()
+    sched = start_reminder_scheduler()
     reschedule_pending_reminders()
+    # Unpaid holds also expire on every slot/booking request; this job keeps the admin list honest.
+    sched.add_job(expire_stale_holds_job, "interval", minutes=1, id="expire_holds", replace_existing=True)
     yield
     shutdown_reminder_scheduler()
 
@@ -48,6 +52,7 @@ app.add_middleware(
 app.include_router(slots_router, prefix="/api")
 app.include_router(barbers_router, prefix="/api")
 app.include_router(bookings_router, prefix="/api")
+app.include_router(payments_router, prefix="/api")
 app.include_router(admin_login_router, prefix="/api")
 app.include_router(admin_router, prefix="/api")
 
